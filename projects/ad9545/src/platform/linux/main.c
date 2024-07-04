@@ -1,7 +1,6 @@
 /***************************************************************************//**
- *   @file   parameters.h
- *   @brief  Definitions specific to Maxim platform used by eval-ad9545-sdz
- *           project.
+ *   @file   main.c
+ *   @brief  Main file for Maxim platform of ad9545-sdz project.
  *   @author Marcelo Schmitt (marcelo.schmitt@analog.com)
 ********************************************************************************
  * Copyright 2024(c) Analog Devices, Inc.
@@ -37,45 +36,39 @@
  * OR TORT (INCLUDING NEGLIGENCE OR OTHERWISE) ARISING IN ANY WAY OUT OF THE USE
  * OF THIS SOFTWARE, EVEN IF ADVISED OF THE POSSIBILITY OF SUCH DAMAGE.
 *******************************************************************************/
-#ifndef __PARAMETERS_H__
-#define __PARAMETERS_H__
 
 /******************************************************************************/
 /***************************** Include Files **********************************/
 /******************************************************************************/
-#include "maxim_irq.h"
-#include "maxim_spi.h"
-#include "maxim_gpio.h"
-#include "maxim_uart.h"
-#include "maxim_uart_stdio.h"
-#include "maxim_timer.h"
-#include "no_os_timer.h"
-#include "maxim_i2c.h"
+#include "no_os_delay.h"
+#include "no_os_uart.h"
+#include "no_os_error.h"
+#include "common_data.h"
+#include "platform_includes.h"
 
-/******************************************************************************/
-/********************** Macros and Constants Definitions **********************/
-/******************************************************************************/
+#ifdef BASIC_EXAMPLE
+#include "basic_example.h"
+#endif
 
-#define UART_DEVICE_ID	0
-#define UART_IRQ_ID	UART0_IRQn
-#define UART_BAUDRATE	115200
-#define UART_EXTRA	&ad9545_uart_extra_ip
-#define UART_OPS	&max_uart_ops
-#define INTC_DEVICE_ID	0
+/***************************************************************************//**
+ * @brief Main function execution for Maxim platform.
+ *
+ * @return ret - Result of the enabled examples execution.
+*******************************************************************************/
+int main()
+{
+	int ret;
 
-#define SPI_DEVICE_ID	1
-#define SPI_CS		1
-#define SPI_BAUDRATE	200000
-#define SPI_OPS		&max_spi_ops
-#define SPI_EXTRA	&ad9545_spi_extra_ip
+#ifdef BASIC_EXAMPLE
+	ret = basic_example_main();
+#endif
 
-#define I2C_EXTRA	&ad9545_i2c_extra_ip
-#define I2C_OPS		&max_i2c_ops
+#if (BASIC_EXAMPLE == 0)
+#error At least one example has to be selected using y value in Makefile.
+#elif (BASIC_EXAMPLE > 1)
+#error Selected example projects cannot be enabled at the same time. \
+Please enable only one example and re-build the project.
+#endif
 
-#define COMM_TYPE       SPI
-
-extern struct max_uart_init_param ad9545_uart_extra_ip;
-extern struct max_spi_init_param ad9545_spi_extra_ip;
-extern struct max_i2c_init_param ad9545_i2c_extra_ip;
-
-#endif /* __PARAMETERS_H__ */
+	return ret;
+}

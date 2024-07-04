@@ -43,39 +43,26 @@
 /******************************************************************************/
 /***************************** Include Files **********************************/
 /******************************************************************************/
-#include "maxim_irq.h"
-#include "maxim_spi.h"
-#include "maxim_gpio.h"
-#include "maxim_uart.h"
-#include "maxim_uart_stdio.h"
-#include "maxim_timer.h"
-#include "no_os_timer.h"
-#include "maxim_i2c.h"
+#include <stdbool.h>
+#include <stdint.h>
+#include "linux_spi.h"
+#include "linux_i2c.h"
 
 /******************************************************************************/
 /********************** Macros and Constants Definitions **********************/
 /******************************************************************************/
-
-#define UART_DEVICE_ID	0
-#define UART_IRQ_ID	UART0_IRQn
-#define UART_BAUDRATE	115200
-#define UART_EXTRA	&ad9545_uart_extra_ip
-#define UART_OPS	&max_uart_ops
-#define INTC_DEVICE_ID	0
-
-#define SPI_DEVICE_ID	1
-#define SPI_CS		1
-#define SPI_BAUDRATE	200000
-#define SPI_OPS		&max_spi_ops
-#define SPI_EXTRA	&ad9545_spi_extra_ip
+#define SPI_DEVICE_ID	0
+#define SPI_CS		0
+#define SPI_BAUDRATE	1000000
+#define SPI_OPS		&linux_spi_ops
+#define SPI_EXTRA	NULL
 
 #define I2C_EXTRA	&ad9545_i2c_extra_ip
-#define I2C_OPS		&max_i2c_ops
+#define I2C_OPS		&linux_i2c_ops
 
 #define COMM_TYPE       SPI
 
-extern struct max_uart_init_param ad9545_uart_extra_ip;
-extern struct max_spi_init_param ad9545_spi_extra_ip;
-extern struct max_i2c_init_param ad9545_i2c_extra_ip;
+// extern struct linux_uart_init_param ad9545_uart_extra_ip;
+extern struct linux_i2c_init_param ad9545_i2c_extra_ip;
 
 #endif /* __PARAMETERS_H__ */

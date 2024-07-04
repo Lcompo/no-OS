@@ -42,11 +42,12 @@
 /******************************************************************************/
 #include "common_data.h"
 #include "ad9545.h"
-#include <stdbool.h>
+
 
 /******************************************************************************/
 /********************** Macros and Constants Definitions **********************/
 /******************************************************************************/
+#ifndef LINUX_PLATFORM
 struct no_os_uart_init_param ad9545_uart_ip = {
 	.device_id = UART_DEVICE_ID,
 	.irq_id = UART_IRQ_ID,
@@ -58,6 +59,7 @@ struct no_os_uart_init_param ad9545_uart_ip = {
 	.extra = UART_EXTRA,
 	.platform_ops = UART_OPS,
 };
+#endif
 
 struct no_os_spi_init_param ad9545_spi_ip = {
 	.device_id = SPI_DEVICE_ID,
@@ -73,7 +75,7 @@ struct no_os_i2c_init_param ad9545_i2c_ip = {
 	.device_id = 1,
 	.max_speed_hz = 400000,
 	.slave_address = 000, //FIXME: ?
-	.platform_ops = &max_i2c_ops,
+	.platform_ops = I2C_OPS,
 	.extra = I2C_EXTRA
 };
 

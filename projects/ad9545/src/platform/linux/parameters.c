@@ -1,6 +1,6 @@
 /***************************************************************************//**
- *   @file   parameters.h
- *   @brief  Definitions specific to Maxim platform used by eval-ad9545-sdz
+ *   @file   parameters.c
+ *   @brief  Definitions specific to Maxim platform used by eval-ad7091r8-sdz
  *           project.
  *   @author Marcelo Schmitt (marcelo.schmitt@analog.com)
 ********************************************************************************
@@ -37,45 +37,15 @@
  * OR TORT (INCLUDING NEGLIGENCE OR OTHERWISE) ARISING IN ANY WAY OUT OF THE USE
  * OF THIS SOFTWARE, EVEN IF ADVISED OF THE POSSIBILITY OF SUCH DAMAGE.
 *******************************************************************************/
-#ifndef __PARAMETERS_H__
-#define __PARAMETERS_H__
 
 /******************************************************************************/
 /***************************** Include Files **********************************/
 /******************************************************************************/
-#include "maxim_irq.h"
-#include "maxim_spi.h"
-#include "maxim_gpio.h"
-#include "maxim_uart.h"
-#include "maxim_uart_stdio.h"
-#include "maxim_timer.h"
-#include "no_os_timer.h"
-#include "maxim_i2c.h"
+#include "parameters.h"
 
 /******************************************************************************/
 /********************** Macros and Constants Definitions **********************/
 /******************************************************************************/
-
-#define UART_DEVICE_ID	0
-#define UART_IRQ_ID	UART0_IRQn
-#define UART_BAUDRATE	115200
-#define UART_EXTRA	&ad9545_uart_extra_ip
-#define UART_OPS	&max_uart_ops
-#define INTC_DEVICE_ID	0
-
-#define SPI_DEVICE_ID	1
-#define SPI_CS		1
-#define SPI_BAUDRATE	200000
-#define SPI_OPS		&max_spi_ops
-#define SPI_EXTRA	&ad9545_spi_extra_ip
-
-#define I2C_EXTRA	&ad9545_i2c_extra_ip
-#define I2C_OPS		&max_i2c_ops
-
-#define COMM_TYPE       SPI
-
-extern struct max_uart_init_param ad9545_uart_extra_ip;
-extern struct max_spi_init_param ad9545_spi_extra_ip;
-extern struct max_i2c_init_param ad9545_i2c_extra_ip;
-
-#endif /* __PARAMETERS_H__ */
+struct linux_i2c_init_param ad9545_i2c_extra_ip = {
+	.device_id = 0
+};
