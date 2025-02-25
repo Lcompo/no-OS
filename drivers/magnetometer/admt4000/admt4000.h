@@ -3,6 +3,7 @@
  *   @brief  Header Implementation of ADMT4000 Driver.
  *   @author Marc Sosa (marcpaolo.sosa@analog.com)
  *   @author Jose Ramon San Buenaventura (jose.sanbuenaventura@analog.com)
+ *   @author Louijie Compo  (louijie.compo@analog.com)
 ********************************************************************************
  * Copyright 2020(c) Analog Devices, Inc.
  *

@@ -2,6 +2,7 @@
  *   @file   iio_example.c
  *   @brief  Source file for iio example.
  *   @author Jose Ramon San Buenaventura (jose.sanbuenaventura@analog.com)
+ *   @author Louijie Compo  (louijie.compo@analog.com)
 ********************************************************************************
  * Copyright 2020(c) Analog Devices, Inc.
  *
