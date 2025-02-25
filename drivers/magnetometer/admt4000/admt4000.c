@@ -114,7 +114,7 @@ int admt4000_init(struct admt4000_dev **device,
 
     /** Set Direction **/
     ret = no_os_gpio_direction_output(dev->gpio_coil_rs,
-                                       NO_OS_GPIO_LOW);
+                                      NO_OS_GPIO_LOW);
     if (ret)
         goto err;
 
@@ -123,7 +123,7 @@ int admt4000_init(struct admt4000_dev **device,
         goto err;
 
     ret = no_os_gpio_direction_output(dev->gpio_shdn_n,
-                                       NO_OS_GPIO_HIGH);
+                                      NO_OS_GPIO_HIGH);
     if (ret)
         goto err;
 
