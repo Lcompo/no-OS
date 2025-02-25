@@ -371,10 +371,6 @@ int admt4000_raw_angle_read(struct admt4000_dev *device, uint16_t *angle_data);
 int admt4000_get_raw_turns_and_angle(struct admt4000_dev *device, uint8_t *turns,
                                      uint16_t *angle);
 
-/* Converts parsed data from ABSANGLE and ANGLE registers */
-int admt4000_get_converted_turns_and_angle(struct admt4000_dev *device, int *turns,
-        float *angle);
-
 /* Get selected GPIO's logic level */
 int admt4000_get_gpio(struct admt4000_dev *device, uint8_t gpio, bool *logic);
 
