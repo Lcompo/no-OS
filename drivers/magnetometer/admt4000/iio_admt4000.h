@@ -2,7 +2,7 @@
  *   @file   iio_admtADMT4000.h
  *   @brief  Header file of IIO ADMT4000 driver.
  *   @author Jose Ramon San Buenaventura (jose.sanbuenaventura@analog.com)
- *           Louijie Compo  (louijie.compo@analog.com)
+ *   @author Louijie Compo  (louijie.compo@analog.com)
 ********************************************************************************
  * Copyright 2020(c) Analog Devices, Inc.
  *
