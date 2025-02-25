@@ -393,7 +393,7 @@ static int admt4000_iio_store_page(void *dev, char *buf, uint32_t len,
     struct admt4000_iio_dev *iio_admt4000;
     struct admt4000_dev *admt4000;
     uint64_t page = no_os_str_to_uint32(buf);
-    int ret;
+    int ret = 0;
     uint16_t temp = 0;
 
     if (page != 0 && page != 2)
