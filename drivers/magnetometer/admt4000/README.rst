@@ -39,7 +39,7 @@ power
 * Actuator control and positioning 
 
 ADMT4000 Device Configuration
-----------------------------
+-----------------------------
 
 Driver Initialization
 ---------------------
@@ -55,41 +55,42 @@ Additionally the register values can be written using **admt4000_write** API.
 
 
 ADMT4000 Driver Initialization Example
--------------------------------------
+--------------------------------------
 
 .. code-block:: bash
-    struct admt4000_desc *admt4000_desc;
-    const struct no_os_spi_init_param admt_spi_ip = {
-        .device_id = SPI_DEVICE_ID,
-        .max_speed_hz = SPI_BAUDRATE,
-        .chip_select = SPI_CS,
-        .mode = NO_OS_SPI_MODE_0,
-        .bit_order = NO_OS_SPI_BIT_ORDER_MSB_FIRST,
-        .platform_ops = SPI_OPS,
-        .extra = SPI_EXTRA,
-    };
-    struct admt4000_init_param admt4000_ip = {
-        .spi_init = admt_spi_ip,
-        .gpio_coil_rs = gpio_coil_rs_ip,
-        .gpio_gpio0_busy = gpio_gpio0_busy_ip,
-        .gpio_shdn_n = gpio_shdn_n_ip,
-        .dev_vdd = ADMT4000_3P3V,
-    };
-	ret = admt4000_init(&admt4000_desc, admt4000_ip);
-	if (ret)
-		goto exit;
+    
+        struct admt4000_desc *admt4000_desc;
+        const struct no_os_spi_init_param admt_spi_ip = {
+            .device_id = SPI_DEVICE_ID,
+            .max_speed_hz = SPI_BAUDRATE,
+            .chip_select = SPI_CS,
+            .mode = NO_OS_SPI_MODE_0,
+            .bit_order = NO_OS_SPI_BIT_ORDER_MSB_FIRST,
+            .platform_ops = SPI_OPS,
+            .extra = SPI_EXTRA,
+        };
+        struct admt4000_init_param admt4000_ip = {
+            .spi_init = admt_spi_ip,
+            .gpio_coil_rs = gpio_coil_rs_ip,
+            .gpio_gpio0_busy = gpio_gpio0_busy_ip,
+            .gpio_shdn_n = gpio_shdn_n_ip,
+            .dev_vdd = ADMT4000_3P3V,
+        };
+        ret = admt4000_init(&admt4000_desc, admt4000_ip);
+        if (ret)
+            goto exit;
 
 
 
 ADMT4000 no-OS IIO support
--------------------------
+--------------------------
 The ADMT4000 IIO driver comes on top of the ADMT4000 driver and offers support
 for interfacing IIO clients through libiio.
 
 ADMT4000 IIO Device Configuration
---------------------------------
+---------------------------------
 Attributes
------------
+----------
 
 * ``page - sets and reads the page of the register map to be accessed``
 * ``sequencer_mode - to``
@@ -100,40 +101,41 @@ Attributes
 * ``sdp_coil_rs - sets the coil for GMR reset``
 
 ADMT4000 IIO Driver Initialization Example
------------------------------------------
+------------------------------------------
 
 .. code-block:: bash
-    int ret;
 
-    struct admt4000_iio_dev *admt4000_iio_desc;
+        int ret;
 
-    struct admt4000_iio_dev_init_param admt4000_iio_ip = {
-        .admt4000_dev_init = &admt_ip,
-    };
+        struct admt4000_iio_dev *admt4000_iio_desc;
 
-    struct iio_app_desc *app;
-    struct iio_app_init_param app_init_param = { 0 };
+        struct admt4000_iio_dev_init_param admt4000_iio_ip = {
+            .admt4000_dev_init = &admt_ip,
+        };
 
-    ret = admt4000_iio_init(&admt4000_iio_desc, &admt4000_iio_ip);
-    if (ret)
-        goto exit;
+        struct iio_app_desc *app;
+        struct iio_app_init_param app_init_param = { 0 };
 
-    struct iio_app_device iio_devices[] = {
-        {
-            .name = "admt4000",
-            .dev = admt4000_iio_desc,
-            .dev_descriptor = admt4000_iio_desc->iio_dev,
-        },
-    };
+        ret = admt4000_iio_init(&admt4000_iio_desc, &admt4000_iio_ip);
+        if (ret)
+            goto exit;
 
-    app_init_param.devices = iio_devices;
-    app_init_param.nb_devices = NO_OS_ARRAY_SIZE(iio_devices);
-    app_init_param.uart_init_params = uart_ip;
+        struct iio_app_device iio_devices[] = {
+            {
+                .name = "admt4000",
+                .dev = admt4000_iio_desc,
+                .dev_descriptor = admt4000_iio_desc->iio_dev,
+            },
+        };
 
-    ret = iio_app_init(&app, app_init_param);
-    if (ret)
-        goto iio_admt4000_remove;
+        app_init_param.devices = iio_devices;
+        app_init_param.nb_devices = NO_OS_ARRAY_SIZE(iio_devices);
+        app_init_param.uart_init_params = uart_ip;
 
-    ret = iio_app_run(app);
+        ret = iio_app_init(&app, app_init_param);
+        if (ret)
+            goto iio_admt4000_remove;
 
-    iio_app_remove(app);
+        ret = iio_app_run(app);
+
+        iio_app_remove(app);
