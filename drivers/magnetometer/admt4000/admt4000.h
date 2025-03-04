@@ -58,14 +58,14 @@ extern "C" {
 #define ADMT4000_AGP_REG_ANGLESEC       0x08
 
 /*ADMT 0x00 Page Registers*/
-#define ADMT4000_RAW_ANGLE_REG(x)		0x10 + (x)
+#define ADMT4000_RAW_ANGLE_REG(x)       0x10 + (x)
 #define ADMT4000_00_REG_RADIUS          0x18
 #define ADMT4000_00_REG_DIAG1           0x1D
 #define ADMT4000_00_REG_DIAG2           0x1E
 #define ADMT4000_00_REG_TMP0            0x20
 #define ADMT4000_00_REG_TMP1            0x23
 
-/*ADMT 0x02 Page REgisters*/
+/*ADMT 0x02 Page Registers*/
 #define ADMT4000_02_REG_GENERAL         0x10 // ECC0
 #define ADMT4000_02_REG_DIGIOEN         0x12 // ECC0
 #define ADMT4000_02_REG_ANGLECK         0x13 // ECC0
@@ -92,131 +92,129 @@ extern "C" {
 #define ADMT4000_LIFE_CTR               NO_OS_GENMASK(6, 5)
 #define ADMT4000_RCV_CRC                NO_OS_GENMASK(4, 0)
 
-#define ADMT4000_MIN_PAGE				0x00
-#define ADMT4000_MAX_PAGE				0x02
+#define ADMT4000_MIN_PAGE               0x00
+#define ADMT4000_MAX_PAGE               0x02
 
 /* Upper and Lower Byte Masking */
-#define ADMT4000_LOW_BYTE				NO_OS_GENMASK(7, 0)
-#define ADMT4000_HI_BYTE				NO_OS_GENMASK(15, 8)
-
+#define ADMT4000_LOW_BYTE               NO_OS_GENMASK(7, 0)
+#define ADMT4000_HI_BYTE                NO_OS_GENMASK(15, 8)
 
 /* Register 01 */
-#define ADMT4000_CNV_EDGE_MASK			NO_OS_GENMASK(15, 14)
-#define ADMT4000_PAGE_MASK 				NO_OS_GENMASK(4, 0)
-#define ADMT4000_FALLING_EDGE			0x00
-#define ADMT4000_RISING_EDGE			0x3
+#define ADMT4000_CNV_EDGE_MASK          NO_OS_GENMASK(15, 14)
+#define ADMT4000_PAGE_MASK              NO_OS_GENMASK(4, 0)
+#define ADMT4000_FALLING_EDGE           0x00
+#define ADMT4000_RISING_EDGE            0x3
 
 /* Register 03 */
-#define ADMT4000_TURN_CNT_MASK			NO_OS_GENMASK(15, 10)
-#define ADMT4000_ABS_ANGLE_MASK			NO_OS_GENMASK(9, 0)
-#define ADMT4000_INVALID_TURN			0x36
+#define ADMT4000_TURN_CNT_MASK          NO_OS_GENMASK(15, 10)
+#define ADMT4000_ABS_ANGLE_MASK         NO_OS_GENMASK(9, 0)
+#define ADMT4000_INVALID_TURN           0x36
 
 /* Register 04*/
-#define ADMT4000_MAX_GPIO_INDEX			5
-#define ADMT4000_GPIO_LOGIC(x)			NO_OS_BIT(x)
+#define ADMT4000_MAX_GPIO_INDEX         5
+#define ADMT4000_GPIO_LOGIC(x)          NO_OS_BIT(x)
 
 /* Register 05 and 08 */
-#define ADMT4000_ANGLE_MASK				NO_OS_GENMASK(15, 4)
+#define ADMT4000_ANGLE_MASK             NO_OS_GENMASK(15, 4)
 
 /* Register 06 */
-#define ADMT4000_ALL_FAULTS				NO_OS_GENMASK(15, 0)
-#define ADMT4000_AGP_INDIV_FAULT(x)		NO_OS_BIT((x))
+#define ADMT4000_ALL_FAULTS             NO_OS_GENMASK(15, 0)
+#define ADMT4000_AGP_INDIV_FAULT(x)     NO_OS_BIT((x))
 
 /* Register 0x08/10/11/12/13/18, page 0 */
-#define ADMT4000_ANGLE_STAT_MASK		NO_OS_BIT(0)
+#define ADMT4000_ANGLE_STAT_MASK        NO_OS_BIT(0)
 
 /* Register 0x10/11/12/13, page 0 */
-#define ADMT4000_RAW_ANGLE_MASK			NO_OS_GENMASK(15, 2)
+#define ADMT4000_RAW_ANGLE_MASK         NO_OS_GENMASK(15, 2)
 
 /* Register 18, page 0 */
-#define ADMT4000_RADIUS_MASK			NO_OS_GENMASK(15, 1)
+#define ADMT4000_RADIUS_MASK            NO_OS_GENMASK(15, 1)
 
 /* Register 0x1D, page 0 */
-#define ADMT4000_MTDIAG1_MASK			NO_OS_GENMASK(15, 8)
-#define ADMT4000_AFEDIAG2_MASK			NO_OS_GENMASK(7, 0)
+#define ADMT4000_MTDIAG1_MASK           NO_OS_GENMASK(15, 8)
+#define ADMT4000_AFEDIAG2_MASK          NO_OS_GENMASK(7, 0)
 
 /* Register 0x1E, page 0 */
-#define ADMT4000_AFEDIAG1_MASK			NO_OS_GENMASK(15, 8)
-#define ADMT4000_REF_RES(x)				NO_OS_BIT(8 + (x))
-#define ADMT4000_AFEDIAG0_MASK			NO_OS_GENMASK(7, 0)
+#define ADMT4000_AFEDIAG1_MASK          NO_OS_GENMASK(15, 8)
+#define ADMT4000_REF_RES(x)             NO_OS_BIT(8 + (x))
+#define ADMT4000_AFEDIAG0_MASK          NO_OS_GENMASK(7, 0)
 
 /* Register 0x20, page 0 */
-#define ADMT4000_TEMP_MASK				NO_OS_GENMASK(15, 4)
+#define ADMT4000_TEMP_MASK              NO_OS_GENMASK(15, 4)
 
 /* Register 0x10, page 2 */
-#define ADMT4000_STORAGE_MSB_XTRACT		NO_OS_BIT(7)
-#define ADMT4000_STORAGE_BIT6_XTRACT		NO_OS_BIT(6)
-#define ADMT4000_STORAGE_MASK1_XTRACT		NO_OS_GENMASK(5, 3)
-#define ADMT4000_STORAGE_MASK0_XTRACT		NO_OS_GENMASK(2, 0)
-#define ADMT4000_STORAGE_MSB			NO_OS_BIT(15)
-#define ADMT4000_STORAGE_BIT6			NO_OS_BIT(11)
-#define ADMT4000_STORAGE_MASK1			NO_OS_GENMASK(8, 6)
-#define ADMT4000_STORAGE_MASK0			NO_OS_GENMASK(3, 1)
+#define ADMT4000_STORAGE_MSB_XTRACT     NO_OS_BIT(7)
+#define ADMT4000_STORAGE_BIT6_XTRACT    NO_OS_BIT(6)
+#define ADMT4000_STORAGE_MASK1_XTRACT   NO_OS_GENMASK(5, 3)
+#define ADMT4000_STORAGE_MASK0_XTRACT   NO_OS_GENMASK(2, 0)
+#define ADMT4000_STORAGE_MSB            NO_OS_BIT(15)
+#define ADMT4000_STORAGE_BIT6           NO_OS_BIT(11)
+#define ADMT4000_STORAGE_MASK1          NO_OS_GENMASK(8, 6)
+#define ADMT4000_STORAGE_MASK0          NO_OS_GENMASK(3, 1)
 #define ADMT4000_STORAGE_MASK_FULL      ADMT4000_STORAGE_MSB | \
-										ADMT4000_STORAGE_BIT6 | \
-										ADMT4000_STORAGE_MASK1 | \
-										ADMT4000_STORAGE_MASK0
+                                        ADMT4000_STORAGE_BIT6 | \
+                                        ADMT4000_STORAGE_MASK1 | \
+                                        ADMT4000_STORAGE_MASK0
 
-#define ADMT4000_CNV_SYNC_MASK			NO_OS_GENMASK(14, 13)
-#define ADMT4000_ANGL_FILT_MASK			NO_OS_BIT(12)
-#define ADMT4000_H8_CTRL_MASK			NO_OS_BIT(10)
-#define ADMT4000_SEQ_MODE_MASK			NO_OS_GENMASK(5, 4)
-#define ADMT4000_CNV_MODE_MASK			NO_OS_BIT(0)
+#define ADMT4000_CNV_SYNC_MASK          NO_OS_GENMASK(14, 13)
+#define ADMT4000_ANGL_FILT_MASK         NO_OS_BIT(12)
+#define ADMT4000_H8_CTRL_MASK           NO_OS_BIT(10)
+#define ADMT4000_SEQ_MODE_MASK          NO_OS_GENMASK(5, 4)
+#define ADMT4000_CNV_MODE_MASK          NO_OS_BIT(0)
 
 /* Register 0x12, page 2 */
-#define ADMT4000_DIG_IO_EN(x)			NO_OS_BIT(8 + (x))
-#define ADMT4000_GPIO_FUNC(x)			NO_OS_BIT(x)
+#define ADMT4000_DIG_IO_EN(x)           NO_OS_BIT(8 + (x))
+#define ADMT4000_GPIO_FUNC(x)           NO_OS_BIT(x)
 
 /* Register 0x13, page 2 */
-#define ADMT4000_ANGL_CHK_MASK			NO_OS_GENMASK(9, 0)
+#define ADMT4000_ANGL_CHK_MASK          NO_OS_GENMASK(9, 0)
 
 /* Register 0x13, page 2 */
-#define ADMT4000_CNV_CTR_MASK			NO_OS_GENMASK(7, 0)
+#define ADMT4000_CNV_CTR_MASK           NO_OS_GENMASK(7, 0)
 
 /* Register 0x15 / 0x18, page 2 */
-#define ADMT4000_H_11BIT_MAG_MASK		NO_OS_GENMASK(10, 0)
-#define ADMT4000_11BIT_MAX				2047
-#define ADMT4000_H_12BIT_PHA_MASK		NO_OS_GENMASK(11, 0)
-#define ADMT4000_12BIT_MAX				4095
+#define ADMT4000_H_11BIT_MAG_MASK       NO_OS_GENMASK(10, 0)
+#define ADMT4000_11BIT_MAX              2047
+#define ADMT4000_H_12BIT_PHA_MASK       NO_OS_GENMASK(11, 0)
+#define ADMT4000_12BIT_MAX              4095
 
 /* Register 0x1A / 0x1B, page 2 */
-#define ADMT4000_H_8BIT_MAG_MASK		NO_OS_GENMASK(7, 0)
-#define ADMT4000_8BIT_MAX				127
+#define ADMT4000_H_8BIT_MAG_MASK        NO_OS_GENMASK(7, 0)
+#define ADMT4000_8BIT_MAX               127
 
 /* Register 0x1D, page 2 */
-#define ADMT4000_ECC_CFG1				NO_OS_GENMASK(15, 8)
-#define ADMT4000_ECC_CFG0				NO_OS_GENMASK(7, 0)
+#define ADMT4000_ECC_CFG1               NO_OS_GENMASK(15, 8)
+#define ADMT4000_ECC_CFG0               NO_OS_GENMASK(7, 0)
 
 /* Register 0x1E 0x1F 0x20 0x21 , page 2 */
-#define ADMT4000_ID0_MASK				NO_OS_GENMASK(14, 0)
-#define ADMT4000_ID_PROD_MASK			NO_OS_GENMASK(10, 8)
-#define ADMT4000_ID_SUPPLY_MASK			NO_OS_GENMASK(7, 6)
-#define ADMT4000_ID_ASIL_MASK			NO_OS_GENMASK(5, 3)
-#define ADMT4000_ID_SIL_REV_MAS			NO_OS_GENMASK(2, 0)
+#define ADMT4000_ID0_MASK               NO_OS_GENMASK(14, 0)
+#define ADMT4000_ID_PROD_MASK           NO_OS_GENMASK(10, 8)
+#define ADMT4000_ID_SUPPLY_MASK         NO_OS_GENMASK(7, 6)
+#define ADMT4000_ID_ASIL_MASK           NO_OS_GENMASK(5, 3)
+#define ADMT4000_ID_SIL_REV_MAS         NO_OS_GENMASK(2, 0)
 
 /* Register 0x23, page 2 */
-#define ADMT4000_ECC_EN_COMM			0x0000
-#define ADMT4000_ECC_DIS_COMM			0x4D54
+#define ADMT4000_ECC_EN_COMM            0x0000
+#define ADMT4000_ECC_DIS_COMM           0x4D54
 
 /* Angle to degree conversion */
-#define ADMT4000_ABS_ANGLE_RES			360.0 / 1024.0
-#define ADMT4000_ANGLE_RES				360.0 / 4096.0
+#define ADMT4000_ABS_ANGLE_RES          360.0 / 1024.0
+#define ADMT4000_ANGLE_RES              360.0 / 4096.0
 
 /* Turn Count Conversion */
-#define ADMT4000_TURN_CNT_THRES			0x35
-#define ADMT4000_TURN_CNT_TWOS			64
+#define ADMT4000_TURN_CNT_THRES         0x35
+#define ADMT4000_TURN_CNT_TWOS          64
 
 /* Conversion Factors */
-#define ADMT4000_RADIUS_RES				0.000924 // mV/V unit
-#define ADMT4000_FIXED_VOLT_3P3V_RES	0.003222 // mV/bit
-#define ADMT4000_FIXED_VOLT_5V_RES		0.0048828 // mV/bit
-#define ADMT4000_8BIT_THRES				0x7f // 2's complement threhsold
-#define ADMT4000_8BIT_TWOS				0x100 // 2's complement factor
-#define ADMT4000_DIAG_RESISTOR_RES		0.78125 // in percent
-#define ADMT4000_CORDIC_SCALER			0.6072 // for hmag hpha
-#define ADMT4000_HMAG_RES				0.005493 // hmag resolution
-#define ADMT4000_HPHA_RES				0.087891 // hpha resolution
-
+#define ADMT4000_RADIUS_RES             0.000924 // mV/V unit
+#define ADMT4000_FIXED_VOLT_3P3V_RES    0.003222 // mV/bit
+#define ADMT4000_FIXED_VOLT_5V_RES      0.0048828 // mV/bit
+#define ADMT4000_8BIT_THRES             0x7f // 2's complement threhsold
+#define ADMT4000_8BIT_TWOS              0x100 // 2's complement factor
+#define ADMT4000_DIAG_RESISTOR_RES      0.78125 // in percent
+#define ADMT4000_CORDIC_SCALER          0.6072 // for hmag hpha
+#define ADMT4000_HMAG_RES               0.005493 // hmag resolution
+#define ADMT4000_HPHA_RES               0.087891 // hpha resolution
 
 enum admt4000_faults {
     ADMT4000_FAULT_VDD_UV,
@@ -310,7 +308,6 @@ struct admt4000_init_param {
     /* Specifier for ADMT4000 variant based on VDD */
     enum admt4000_vdd dev_vdd;
 };
-
 
 int test(char* in_buf, char*out_buf);
 
@@ -530,7 +527,7 @@ int admt4000_sdp_pulse_coil_rs(struct admt4000_dev *device);
 /* Get value of ADMT4000 GPIO_BUSY */
 int admt4000_sdp_getval_gpio0_busy(struct admt4000_dev *device, uint8_t *val);
 
-#endif	/* __ADMT4000_H__ */
+#endif  /* __ADMT4000_H__ */
 
 #ifdef __cplusplus
 }
