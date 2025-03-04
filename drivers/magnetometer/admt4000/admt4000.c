@@ -4,9 +4,9 @@
  *   @details This file contains the implementation of the ADMT4000 driver.
  *            It includes functions for initializing the device, reading and
  *            writing registers, computing CRC, ECC encoding, and more.
- *   @author Marc Sosa (marcpaolo.sosa@analog.com)
- *   @author Jose Ramon San Buenaventura (jose.sanbuenaventura@analog.com)
- *   @author Louijie Compo  (louijie.compo@analog.com)
+ *   @authors Marc Sosa
+ *            Jose Ramon San Buenaventura
+ *            Louijie Compo
 ********************************************************************************
  * Copyright 2020(c) Analog Devices, Inc.
  *
@@ -73,11 +73,7 @@ static uint32_t admt4000_angle_conv_factors[] = {
  * @param init_param - The structure that contains the device initial
  *                     parameters.
  *
- * @return status - Result of the initialization procedure.
- *                  Example: -1 - SPI peripheral was not initialized or
- *                                admt4000 part is not present.
- *                            0 - SPI peripheral is initialized and adbms6830
- *                                part is present.
+ * @return 0 in case of success, negative error code otherwise.
 *******************************************************************************/
 int admt4000_init(struct admt4000_dev **device,
 		  struct admt4000_init_param init_param)
@@ -190,14 +186,13 @@ int admt4000_remove(struct admt4000_dev *device)
 }
 
 /***************************************************************************//**
- * @brief Computes the CRC byte based on data input
+ * @brief Computes the CRC byte based on data input.
  *
- * @param device - The device structure.
  * @param reg_addr - Address of the register.
- * @param reg_data - Stores data read from the register.
- * @param excess - Other bits (non register related)
+ * @param reg_data - Data read from the register.
+ * @param excess - Other bits (non-register related).
  * @param is_write - Computation flag depending on operation used.
- * @param crc_ret - Stores the computed CRC value
+ * @param crc_ret - Stores the computed CRC value.
  *
  * @return 0 in case of success, negative error code otherwise.
 *******************************************************************************/
@@ -237,14 +232,15 @@ int admt4000_compute_crc(long reg_addr, uint16_t reg_data, uint8_t excess,
 }
 
 /***************************************************************************//**
- * @brief ECC Encoding process
+ * @brief ECC Encoding process.
  *
- * @param device - The device structure.
- * @param parity_num - Stores the computed number of parity bits to use
- * @param code_length - Stores the computed length of new code (old + parity bits)
- * @param code - Stores the array where the computed codes will be stored
- * @param input - Contains the input data to be encoded from certain ADMT4000 registers
- * @param ecc - value to store ECC register compatible data
+ * @param parity_num - Stores the computed number of parity bits to use.
+ * @param code_length - Stores the computed length of new code (old + parity bits).
+ * @param code - Stores the array where the computed codes will be stored.
+ * @param input - Contains the input data to be encoded from certain ADMT4000 registers.
+ * @param size_code - Size of the code array.
+ * @param size_input - Size of the input array.
+ * @param ecc - Value to store ECC register compatible data.
  *
  * @return 0 in case of success, negative error code otherwise.
 *******************************************************************************/
@@ -278,8 +274,7 @@ int admt4000_ecc_encode(uint8_t *parity_num, uint8_t *code_length,
 	for (i = 0; i < *code_length; i++) {
 		/* Set to 0 */
 		if (i == ((1 << k) - 1)) {
-			code[(i / 8)] &= (uint8_t)~NO_OS_BIT((i &
-							      0x7)); //i & 0x7 is equivalent to i % 8
+			code[(i / 8)] &= (uint8_t)~NO_OS_BIT((i & 0x7)); //i & 0x7 is equivalent to i % 8
 
 			k++;
 		}
@@ -327,14 +322,13 @@ int admt4000_ecc_encode(uint8_t *parity_num, uint8_t *code_length,
 }
 
 /***************************************************************************//**
- * @brief Computes the Hamming Distance
+ * @brief Computes the Hamming Distance.
  *
- * @param device - The device structure.
- * @param position - Bit position
- * @param code_length - Length of code (original data + parity bits). Should be in bits
- * @param code - Array containing bytes to iterate to
+ * @param position - Bit position.
+ * @param code_length - Length of code (original data + parity bits). Should be in bits.
+ * @param code - Array containing bytes to iterate through.
  *
- * @return 0 or 1 (to be appended during ECC encoding process)
+ * @return 0 or 1 (to be appended during ECC encoding process).
 *******************************************************************************/
 int admt4000_hamming_calc(uint8_t position, uint8_t code_length, uint8_t *code)
 {
@@ -362,13 +356,12 @@ int admt4000_hamming_calc(uint8_t position, uint8_t code_length, uint8_t *code)
 }
 
 /***************************************************************************//**
- * @brief Checks if error is present in input code
+ * @brief Checks if error is present in input code.
  *
- * @param device - The device structure.
- * @param parity_num - Number of parity bits appended
- * @param code_length - Length of code (original data + parity bits). Should be in bits
- * @param code - Array containing bytes to iterate to
- * @param err_pos - Bit position where error is detected
+ * @param parity_num - Number of parity bits appended.
+ * @param code_length - Length of code (original data + parity bits). Should be in bits.
+ * @param code - Array containing bytes to iterate through.
+ * @param error_pos - Bit position where error is detected.
  *
  * @return 0 in case of success, negative error code otherwise.
 *******************************************************************************/
@@ -399,10 +392,10 @@ int admt4000_error_check(uint8_t parity_num, uint8_t code_length, uint8_t *code,
 }
 
 /***************************************************************************//**
- * @brief Updates the ECC config register contents
+ * @brief Updates the ECC config register contents.
  *
  * @param device - The device structure.
- * @param ecc_val - ECC Register value computed
+ * @param ecc_val - ECC Register value computed.
  *
  * @return 0 in case of success, negative error code otherwise.
 *******************************************************************************/
@@ -495,12 +488,12 @@ int admt4000_update_ecc(struct admt4000_dev *device, uint16_t *ecc_val)
 }
 
 /***************************************************************************//**
- * @brief Reads data from a certain ADMT400x Register
+ * @brief Reads data from a certain ADMT400x Register.
  *
  * @param device - The device structure.
  * @param reg_addr - Address of the register.
  * @param reg_data - Stores data read from the register.
- * @param verif - Stores the Fault, and CRC bits returned
+ * @param verif - Stores the Fault, and CRC bits returned.
  *
  * @return 0 in case of success, negative error code otherwise.
 *******************************************************************************/
@@ -541,11 +534,11 @@ int admt4000_read(struct admt4000_dev *device, uint8_t reg_addr,
 }
 
 /***************************************************************************//**
- * @brief Writes data to a certain ADMT400x Register
+ * @brief Writes data to a certain ADMT400x Register.
  *
  * @param device - The device structure.
  * @param reg_addr - Address of the register.
- * @param reg_data - Data to write to the chosen register (16 bit wide)
+ * @param reg_data - Data to write to the chosen register (16 bit wide).
  *
  * @return 0 in case of success, negative error code otherwise.
 *******************************************************************************/
@@ -572,12 +565,12 @@ int admt4000_write(struct admt4000_dev *device, uint8_t reg_addr,
 }
 
 /***************************************************************************//**
- * @brief Updates the contents of selected register
+ * @brief Updates the contents of selected register.
  *
  * @param device - The device structure.
  * @param reg_addr - Address of the register.
- * @param update_mask - Mask to update to selected register bit/s
- * @param update_val - Value used to update on selected register
+ * @param update_mask - Mask to update to selected register bit/s.
+ * @param update_val - Value used to update on selected register.
  *
  * @return 0 in case of success, negative error code otherwise.
 *******************************************************************************/
@@ -602,7 +595,7 @@ int admt4000_reg_update(struct admt4000_dev *device, uint8_t reg_addr,
 }
 
 /***************************************************************************//**
- * @brief Configures the page settings
+ * @brief Configures the page settings.
  *
  * @param device - The device structure.
  * @param is_page_zero - Set true for page 0 operations, false for page 2.
@@ -628,7 +621,7 @@ int admt4000_set_page(struct admt4000_dev *device, bool is_page_zero)
 }
 
 /***************************************************************************//**
- * @brief Obtains the page settings
+ * @brief Obtains the page settings.
  *
  * @param device - The device structure.
  * @param is_page_zero - Stores page config (True for page 0. Page 2 otherwise).
@@ -655,10 +648,10 @@ int admt4000_get_page(struct admt4000_dev *device, bool *is_page_zero)
 }
 
 /***************************************************************************//**
- * @brief Toggle the CNV bits to mimic ris/falling edge in CNV pin
+ * @brief Toggle the CNV bits to mimic rising/falling edge in CNV pin.
  *
  * @param device - The device structure.
- * @param is_rising - set to true for rising, false otherwise.
+ * @param is_rising - Set to true for rising, false otherwise.
  *
  * @return 0 in case of success, negative error code otherwise.
 *******************************************************************************/
@@ -684,10 +677,10 @@ int admt4000_set_cnv(struct admt4000_dev *device, bool is_rising)
 }
 
 /***************************************************************************//**
- * @brief Get the CNV bits configuration
+ * @brief Get the CNV bits configuration.
  *
  * @param device - The device structure.
- * @param is_rising - set to true for rising, false otherwise.
+ * @param is_rising - Set to true for rising, false otherwise.
  *
  * @return 0 in case of success, negative error code otherwise.
 *******************************************************************************/
@@ -711,7 +704,7 @@ int admt4000_get_cnv(struct admt4000_dev *device, bool *is_rising)
 }
 
 /***************************************************************************//**
- * @brief Reads ANGLE and ABSANGLE register contents in 1 CS frame
+ * @brief Reads ANGLE and ABSANGLE register contents in 1 CS frame.
  *
  * @param device - The device structure.
  * @param angle_data - Stores data read from the registers.
@@ -755,7 +748,7 @@ int admt4000_raw_angle_read(struct admt4000_dev *device, uint16_t *angle_data)
 }
 
 /***************************************************************************//**
- * @brief Get the number of turns and angle information (Raw)
+ * @brief Get the number of turns and angle information (Raw).
  *
  * @param device - The device structure.
  * @param turns - Stores the number of turns read (Raw).
@@ -786,11 +779,11 @@ int admt4000_get_raw_turns_and_angle(struct admt4000_dev *device,
 }
 
 /***************************************************************************//**
- * @brief Get status of selected GPIO
+ * @brief Get status of selected GPIO.
  *
  * @param device - The device structure.
- * @param gpio - GPIO number (0 to 5)
- * @param logic - stores the truth value of selected gpio
+ * @param gpio - GPIO number (0 to 5).
+ * @param logic - Stores the truth value of selected GPIO.
  *
  * @return 0 in case of success, negative error code otherwise.
 *******************************************************************************/
@@ -813,11 +806,11 @@ int admt4000_get_gpio(struct admt4000_dev *device, uint8_t gpio, bool *logic)
 }
 
 /***************************************************************************//**
- * @brief Configure selected GPIO
+ * @brief Configure selected GPIO.
  *
  * @param device - The device structure.
- * @param gpio - GPIO number (0 to 5)
- * @param logic - logic level to set for GPIO
+ * @param gpio - GPIO number (0 to 5).
+ * @param logic - Logic level to set for GPIO.
  *
  * @return 0 in case of success, negative error code otherwise.
 *******************************************************************************/
@@ -841,7 +834,7 @@ int admt4000_set_gpio(struct admt4000_dev *device, uint8_t gpio, bool logic)
 }
 
 /***************************************************************************//**
- * @brief Clear all faults from fault registers
+ * @brief Clear all faults from fault registers.
  *
  * @param device - The device structure.
  *
@@ -854,11 +847,11 @@ int admt4000_clear_all_faults(struct admt4000_dev *device)
 }
 
 /***************************************************************************//**
- * @brief Check selected fault status from fault register
+ * @brief Check selected fault status from fault register.
  *
  * @param device - The device structure.
- * @param fault - Fault Flag to investigate
- * @param is_flagged - stores the truth value of selected fault
+ * @param fault - Fault Flag to investigate.
+ * @param is_flagged - Stores the truth value of selected fault.
  *
  * @return 0 in case of success, negative error code otherwise.
 *******************************************************************************/
@@ -882,7 +875,7 @@ int admt4000_read_fault(struct admt4000_dev *device, enum admt4000_faults fault,
 }
 
 /***************************************************************************//**
- * @brief Get the secondary angle information
+ * @brief Get the secondary angle information.
  *
  * @param device - The device structure.
  * @param angle - Stores the angle value read (Raw).
@@ -972,7 +965,7 @@ int admt4000_get_angle(struct admt4000_dev *device, uint16_t *raw_angle,
 }
 
 /***************************************************************************//**
- * @brief Get RADIUS vector value
+ * @brief Get RADIUS vector value.
  *
  * @param device - The device structure.
  * @param radius - Stores the vector read.
@@ -1001,7 +994,7 @@ int admt4000_get_radius(struct admt4000_dev *device, uint16_t *radius)
 }
 
 /***************************************************************************//**
- * @brief Get RADIUS vector value (mV/V)
+ * @brief Get RADIUS vector value (mV/V).
  *
  * @param device - The device structure.
  * @param radius - Stores Magnitude value (mV/V).
@@ -1057,7 +1050,7 @@ int admt4000_get_ref_res_state(struct admt4000_dev *device, uint8_t ref_res_num,
 }
 
 /***************************************************************************//**
- * @brief Get fixed voltage from GMR turn count sensor AFE
+ * @brief Get fixed voltage from GMR turn count sensor AFE.
  *
  * @param device - The device structure.
  * @param fixed_volt - Stores the fixed voltage read (Raw).
@@ -1086,7 +1079,7 @@ int admt4000_get_fixed_voltage(struct admt4000_dev *device, uint8_t *fixed_volt)
 }
 
 /***************************************************************************//**
- * @brief Get fixed voltage from GMR turn count sensor AFE (Volts)
+ * @brief Get fixed voltage from GMR turn count sensor AFE (Volts).
  *
  * @param device - The device structure.
  * @param fixed_volt - Stores the fixed voltage read (Volts).
@@ -1118,7 +1111,7 @@ int admt4000_get_converted_fixed_voltage(struct admt4000_dev *device,
 }
 
 /***************************************************************************//**
- * @brief Get Diagnostic Sensor Measurement (+57% or -57%)
+ * @brief Get Diagnostic Sensor Measurement (+57% or -57%).
  *
  * @param device - The device structure.
  * @param diag_meas - Stores the data read (Raw).
@@ -1161,7 +1154,7 @@ int admt4000_get_diag_res(struct admt4000_dev *device, uint16_t *diag_meas,
 }
 
 /***************************************************************************//**
- * @brief Get Diagnostic Sensor Measurement (+57% or -57%)
+ * @brief Get Diagnostic Sensor Measurement (+57% or -57%).
  *
  * @param device - The device structure.
  * @param diag_meas - Stores the percentage value.
@@ -1193,11 +1186,11 @@ int admt4000_get_converted_diag_res(struct admt4000_dev *device,
 }
 
 /***************************************************************************//**
- * @brief Get primary temperature (Raw)
+ * @brief Get primary temperature (Raw).
  *
- * @param	dev - The device structure.
- * @param	temp - raw temperature data
- * @param   is_primary - Set true to get from primary temp register, false otherwise.
+ * @param device - The device structure.
+ * @param temp - Raw temperature data.
+ * @param is_primary - Set true to get from primary temp register, false otherwise.
  *
  * @return 0 in case of success, negative error code otherwise.
 *******************************************************************************/
@@ -1227,11 +1220,11 @@ int admt4000_get_temp(struct admt4000_dev *device, uint16_t *temp,
 }
 
 /***************************************************************************//**
- * @brief Get primary temperature (Degrees)
+ * @brief Get primary temperature (Degrees).
  *
- * @param	dev - The device structure.
- * @param	temp - temperature data (Degrees).
- * @param   is_primary - Set true to get from primary temp register, false otherwise.
+ * @param device - The device structure.
+ * @param temp - Temperature data (Degrees).
+ * @param is_primary - Set true to get from primary temp register, false otherwise.
  *
  * @return 0 in case of success, negative error code otherwise.
 *******************************************************************************/
@@ -1260,10 +1253,10 @@ int admt4000_get_converted_temp(struct admt4000_dev *device, uint32_t *temp,
 }
 
 /***************************************************************************//**
- * @brief Gets storage general config
+ * @brief Gets storage general config.
  *
  * @param device - The device structure.
- * @param storage - stores the storage bits read
+ * @param storage - Stores the storage bits read.
  *
  * @return 0 in case of success, negative error code otherwise.
 *******************************************************************************/
@@ -1296,10 +1289,10 @@ int admt4000_get_storage_config(struct admt4000_dev *device, uint8_t *storage)
 }
 
 /***************************************************************************//**
- * @brief Sets storage general config
+ * @brief Sets storage general config.
  *
  * @param device - The device structure.
- * @param storage - data to write on storage bits
+ * @param storage - Data to write on storage bits.
  *
  * @return 0 in case of success, negative error code otherwise.
 *******************************************************************************/
@@ -1338,10 +1331,10 @@ int admt4000_set_storage_config(struct admt4000_dev *device, uint8_t storage)
 }
 
 /***************************************************************************//**
- * @brief Gets conversion start's sync mode
+ * @brief Gets conversion start's sync mode.
  *
  * @param device - The device structure.
- * @param storage - stores the Conversion Sync Setting
+ * @param storage - Stores the Conversion Sync Setting.
  *
  * @return 0 in case of success, negative error code otherwise.
 *******************************************************************************/
@@ -1368,7 +1361,7 @@ int admt4000_get_cnv_sync(struct admt4000_dev *device,
 }
 
 /***************************************************************************//**
- * @brief Sets conversion start's sync mode
+ * @brief Sets conversion start's sync mode.
  *
  * @param device - The device structure.
  * @param storage - Conversion Sync setting to write.
@@ -1408,7 +1401,7 @@ int admt4000_set_cnv_sync(struct admt4000_dev *device,
  * @brief Gets current filter setting.
  *
  * @param device - The device structure.
- * @param is_filtered - stores the logic level of the filter enable bit
+ * @param is_filtered - Stores the logic level of the filter enable bit.
  *
  * @return 0 in case of success, negative error code otherwise.
 *******************************************************************************/
@@ -1437,7 +1430,7 @@ int admt4000_get_angle_filt(struct admt4000_dev *device, bool *is_filtered)
  * @brief Sets the filter setting.
  *
  * @param device - The device structure.
- * @param is_filtered - set true to enable filter, false otherwise
+ * @param is_filtered - Set true to enable filter, false otherwise.
  *
  * @return 0 in case of success, negative error code otherwise.
 *******************************************************************************/
@@ -1471,7 +1464,7 @@ int admt4000_set_angle_filt(struct admt4000_dev *device, bool is_filtered)
  * @brief Gets 8th harmonic control setting.
  *
  * @param device - The device structure.
- * @param is_user_supplied - stores the logic level of the 8th harmonic correction source bit
+ * @param is_user_supplied - Stores the logic level of the 8th harmonic correction source bit.
  *
  * @return 0 in case of success, negative error code otherwise.
 *******************************************************************************/
@@ -1497,10 +1490,10 @@ int admt4000_get_h8_ctrl(struct admt4000_dev *device, bool *is_user_supplied)
 }
 
 /***************************************************************************//**
- * @brief Sets 8th harmonic control setting
+ * @brief Sets 8th harmonic control setting.
  *
  * @param device - The device structure.
- * @param is_user_supplied - sets the logic level of the 8th harmonic correction source bit
+ * @param is_user_supplied - Sets the logic level of the 8th harmonic correction source bit.
  *
  * @return 0 in case of success, negative error code otherwise.
 *******************************************************************************/
@@ -1534,8 +1527,8 @@ int admt4000_set_h8_ctrl(struct admt4000_dev *device, bool is_user_supplied)
 /***************************************************************************//**
  * @brief Obtains sequencer mode.
  *
- * @param device - The device structure
- * @param seq - The sequence mode to configure
+ * @param device - The device structure.
+ * @param seq - The sequence mode to configure.
  *
  * @return 0 in case of success, negative error code otherwise.
 *******************************************************************************/
@@ -1564,8 +1557,8 @@ int admt4000_get_seq_mode(struct admt4000_dev *device,
 /***************************************************************************//**
  * @brief Configures between fast mode and diagnostic sequencer mode.
  *
- * @param device - The device structure
- * @param seq - stores the obtained sequence mode
+ * @param device - The device structure.
+ * @param seq - Stores the obtained sequence mode.
  *
  * @return 0 in case of success, negative error code otherwise.
 *******************************************************************************/
@@ -1598,7 +1591,7 @@ int admt4000_set_seq_mode(struct admt4000_dev *device,
 }
 
 /***************************************************************************//**
- * @brief Obtains the conversion mode
+ * @brief Obtains the conversion mode.
  *
  * @param device - The device structure.
  * @param is_one_shot - Stores the conversion mode bit value.
@@ -1663,11 +1656,11 @@ int admt4000_set_cnv_mode(struct admt4000_dev *device, bool is_one_shot)
 }
 
 /***************************************************************************//**
- * @brief En/Disables GPIO
+ * @brief En/Disables GPIO.
  *
  * @param device - The device structure.
  * @param gpio - The GPIO number to configure.
- * @param is_en - Set to true to enable selected GPIO
+ * @param is_en - Set to true to enable selected GPIO.
  *
  * @return 0 in case of success, negative error code otherwise.
 *******************************************************************************/
@@ -1703,7 +1696,7 @@ int admt4000_io_en(struct admt4000_dev *device, uint8_t gpio, bool is_en)
 }
 
 /***************************************************************************//**
- * @brief Configure GPIO function
+ * @brief Configure GPIO function.
  *
  * @param device - The device structure.
  * @param gpio - The GPIO number to configure.
@@ -1746,7 +1739,7 @@ int admt4000_gpio_func(struct admt4000_dev *device, uint8_t gpio,
 }
 
 /***************************************************************************//**
- * @brief Get Angle Threshold (Raw)
+ * @brief Get Angle Threshold (Raw).
  *
  * @param device - The device structure.
  * @param thres - Stores threshold data (Raw).
@@ -1775,7 +1768,7 @@ int admt4000_get_angle_thres(struct admt4000_dev *device, uint16_t *thres)
 }
 
 /***************************************************************************//**
- * @brief Get Angle Threshold (Degrees)
+ * @brief Get Angle Threshold (Degrees).
  *
  * @param device - The device structure.
  * @param thres - Stores threshold data (Degrees).
@@ -1798,7 +1791,7 @@ int admt4000_get_converted_angle_thres(struct admt4000_dev *device,
 }
 
 /***************************************************************************//**
- * @brief Set or get Angle Threshold
+ * @brief Set or get Angle Threshold.
  *
  * @param device - The device structure.
  * @param thres - Threshold data to set.
@@ -1839,7 +1832,7 @@ int admt4000_set_angle_thres(struct admt4000_dev *device, uint16_t thres)
 }
 
 /***************************************************************************//**
- * @brief Set Angle Threshold (degrees)
+ * @brief Set Angle Threshold (degrees).
  *
  * @param device - The device structure.
  * @param thres - Threshold data to set.
@@ -1860,7 +1853,7 @@ int admt4000_set_converted_angle_thres(struct admt4000_dev *device,
 }
 
 /***************************************************************************//**
- * @brief Get current conversion count
+ * @brief Get current conversion count.
  *
  * @param device - The device structure.
  * @param cnt - Stores the count data.
@@ -1889,7 +1882,7 @@ int admt4000_get_cnv_cnt(struct admt4000_dev *device, uint8_t *cnt)
 }
 
 /***************************************************************************//**
- * @brief Set current conversion count
+ * @brief Set current conversion count.
  *
  * @param device - The device structure.
  * @param cnt - Count data to store.
@@ -2206,7 +2199,7 @@ int admt4000_set_converted_hphase_config(struct admt4000_dev *device,
  * @brief Read Unique ID from register/s.
  *
  * @param device - The device structure.
- * @param id_num - The ID register to read from
+ * @param id_num - The ID register to read from.
  * @param id - Stores the ID value read.
  *
  * @return 0 in case of success, negative error code otherwise.
@@ -2252,10 +2245,10 @@ int admt4000_get_id(struct admt4000_dev *device, uint8_t id_num, uint16_t *id)
 }
 
 /***************************************************************************//**
- * @brief En/disables the ECC functionality
+ * @brief En/disables the ECC functionality.
  *
  * @param device - The device structure.
- * @param is_en - Set to true enable ECC, false otherwise
+ * @param is_en - Set to true enable ECC, false otherwise.
  *
  * @return 0 in case of success, negative error code otherwise.
 *******************************************************************************/
@@ -2276,7 +2269,7 @@ int admt4000_ecc_config(struct admt4000_dev *device, bool is_en)
 }
 
 /***************************************************************************//**
- * @brief Transitions SDP's GPIO pin to high-logic
+ * @brief Transitions SDP's GPIO pin to high-logic.
  *
  * @param device - The device structure.
  *
@@ -2303,7 +2296,7 @@ int admt4000_sdp_pulse_coil_rs(struct admt4000_dev *device)
 }
 
 /***************************************************************************//**
- * @brief Get value of ADMT4000 GPIO_BUSY
+ * @brief Get value of ADMT4000 GPIO_BUSY.
  *
  * @param device - The device structure.
  * @param val - Buffer for the value.
