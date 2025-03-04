@@ -782,39 +782,6 @@ int admt4000_get_raw_turns_and_angle(struct admt4000_dev *device, uint8_t *turns
 }
 
 /***************************************************************************//**
- * @brief Get the number of turns and angle information (Converted)
- *
- * @param device - The device structure.
- * @param turns - Stores the number of turns read (Converted, Posi/Negative).
- * @param angle - Stores the angle values read (Degrees).
- *
- * @return 0 in case of success, negative error code otherwise.
-*******************************************************************************/
-int admt4000_get_converted_turns_and_angle(struct admt4000_dev *device, int *turns,
-        float *angle)
-{
-    int i, ret;
-    uint8_t temp_turn;
-    uint16_t raw_angle[2];
-
-    ret = admt4000_get_raw_turns_and_angle(device, &temp_turn, raw_angle);
-    if (ret)
-        return ret;
-
-    /* Angle Factor Conversion */
-    for (i = 0; i < 2; i++)
-        angle[i] = (float)raw_angle[i] * admt4000_angle_conv_factors[i];
-
-    /* 2's Compliment Turn Count */
-    if (temp_turn > ADMT4000_TURN_CNT_THRES)
-        *turns = (int)(temp_turn) - ADMT4000_TURN_CNT_TWOS;
-    else
-        *turns = (int)temp_turn;
-
-    return 0;
-}
-
-/***************************************************************************//**
  * @brief Get status of selected GPIO
  *
  * @param dev - The device structure.
