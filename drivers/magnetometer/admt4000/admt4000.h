@@ -295,7 +295,7 @@ struct admt4000_dev {
     /* Throws early samples of a channel*/
     bool is_throw_early_samples;
 
-    /* Conversion factor for fixed voltage measurements (mV) */
+    /* Conversion factor for fixed voltage measurements (uV) */
     uint32_t fixed_conv_factor_mv;
 
     /* Tracker for type of angle threshold set */

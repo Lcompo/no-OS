@@ -138,9 +138,9 @@ int admt4000_init(struct admt4000_dev **device,
         goto err;
 
     if (init_param.dev_vdd == ADMT4000_3P3V)
-        dev->fixed_conv_factor_mv = 412.5 * ADMT4000_SF;
+        dev->fixed_conv_factor_mv = 412500; // in uV
     else
-        dev->fixed_conv_factor_mv = 300 * ADMT4000_SF;
+        dev->fixed_conv_factor_mv = 300000; // in uV
 
     ret = admt4000_get_cnv_mode(dev, &bool_temp);
     if (ret)
