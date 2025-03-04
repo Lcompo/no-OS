@@ -40,51 +40,51 @@
 
 int iio_example_main()
 {
-    int ret;
+	int ret;
 
-    /** IIO descriptor and initialization parameter. */
-    struct admt4000_iio_dev *admt4000_iio_desc;
+	/** IIO descriptor and initialization parameter. */
+	struct admt4000_iio_dev *admt4000_iio_desc;
 
-    struct admt4000_iio_dev_init_param admt4000_iio_ip = {
-        .admt4000_dev_init = &admt_ip,
-    };
+	struct admt4000_iio_dev_init_param admt4000_iio_ip = {
+		.admt4000_dev_init = &admt_ip,
+	};
 
-    /** IIO app. */
-    struct iio_app_desc *app;
-    struct iio_app_init_param app_init_param = { 0 };
+	/** IIO app. */
+	struct iio_app_desc *app;
+	struct iio_app_init_param app_init_param = { 0 };
 
-    ret = admt4000_iio_init(&admt4000_iio_desc, &admt4000_iio_ip);
-    if (ret)
-        goto exit;
+	ret = admt4000_iio_init(&admt4000_iio_desc, &admt4000_iio_ip);
+	if (ret)
+		goto exit;
 
-    /** Declaring iio_devices structure */
-    struct iio_app_device iio_devices[] = {
-        {
-            .name = "admt4000",
-            .dev = admt4000_iio_desc,
-            .dev_descriptor = admt4000_iio_desc->iio_dev,
-        },
-    };
+	/** Declaring iio_devices structure */
+	struct iio_app_device iio_devices[] = {
+		{
+			.name = "admt4000",
+			.dev = admt4000_iio_desc,
+			.dev_descriptor = admt4000_iio_desc->iio_dev,
+		},
+	};
 
-    /** Initializing IIO app init param. */
-    app_init_param.devices = iio_devices;
-    app_init_param.nb_devices = NO_OS_ARRAY_SIZE(iio_devices);
-    app_init_param.uart_init_params = uart_ip;
+	/** Initializing IIO app init param. */
+	app_init_param.devices = iio_devices;
+	app_init_param.nb_devices = NO_OS_ARRAY_SIZE(iio_devices);
+	app_init_param.uart_init_params = uart_ip;
 
-    /** Initializing IIO app. */
-    ret = iio_app_init(&app, app_init_param);
-    if (ret)
-        goto iio_admt4000_remove;
+	/** Initializing IIO app. */
+	ret = iio_app_init(&app, app_init_param);
+	if (ret)
+		goto iio_admt4000_remove;
 
-    /** Running the IIO app (use iio_info or osc in terminal). */
-    ret = iio_app_run(app);
+	/** Running the IIO app (use iio_info or osc in terminal). */
+	ret = iio_app_run(app);
 
-    iio_app_remove(app);
+	iio_app_remove(app);
 
 iio_admt4000_remove:
-    admt4000_iio_remove(admt4000_iio_desc);
+	admt4000_iio_remove(admt4000_iio_desc);
 exit:
-    if (ret)
-        pr_info("Error!\n");
-    return ret;
+	if (ret)
+		pr_info("Error!\n");
+	return ret;
 }
