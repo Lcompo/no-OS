@@ -278,16 +278,16 @@ int admt4000_ecc_encode(uint8_t *parity_num, uint8_t *code_length,
 	for (i = 0; i < *code_length; i++) {
 		/* Set to 0 */
 		if (i == ((1 << k) - 1)) {
-			code[(i / 8)] &= (uint8_t)~NO_OS_BIT((i % 8));
+			code[(i / 8)] &= (uint8_t)~NO_OS_BIT((i & 0x7)); //i & 0x7 is equivalent to i % 8
 
 			k++;
 		}
 		/* Get from input byte array */
 		else {
-			code[(i / 8)] &= (uint8_t)~NO_OS_BIT((i % 8));
+			code[(i / 8)] &= (uint8_t)~NO_OS_BIT((i & 0x7));
 
-			xtract = (uint8_t)no_os_field_get(NO_OS_BIT(j % 8), input[(j / 8)]);
-			xtract = (uint8_t)no_os_field_prep(NO_OS_BIT((i % 8)), xtract);
+			xtract = (uint8_t)no_os_field_get(NO_OS_BIT(j & 0x7), input[(j / 8)]);
+			xtract = (uint8_t)no_os_field_prep(NO_OS_BIT((i & 0x7)), xtract);
 
 			code[(i / 8)] |= xtract;
 
@@ -304,23 +304,20 @@ int admt4000_ecc_encode(uint8_t *parity_num, uint8_t *code_length,
 
 		eff_pos = position - 1;
 
-		code[(eff_pos / 8)] &= ~NO_OS_BIT(eff_pos % 8);
-		code[(eff_pos / 8)] |= (NO_OS_BIT(eff_pos % 8) * value);
+		code[(eff_pos / 8)] &= ~NO_OS_BIT(eff_pos & 0x7); //i & 0x7 is equivalent to i % 8
+		code[(eff_pos / 8)] |= (NO_OS_BIT(eff_pos & 0x7) * value);
 
 		*ecc |= (value << i);
 	}
 
 	value = 0;
 	for (i = 0; i < *code_length; i++) {
-		uint8_t bit = no_os_field_get(NO_OS_BIT(i % 8), code[(i / 8)]);
+		uint8_t bit = no_os_field_get(NO_OS_BIT(i & 0x7), code[(i / 8)]);
 		if (bit)
 			value++;
 	}
 
-	if (value % 2)
-		value = 1;
-	else
-		value = 0;
+    value &= 0x1;
 
 	*ecc |= (value << *parity_num);
 
@@ -348,7 +345,7 @@ int admt4000_hamming_calc(uint8_t position, uint8_t code_length, uint8_t *code)
 
 	while (i < code_length) {
 		for (j = i; j < i + position; j++) {
-			bit_extract = no_os_field_get(NO_OS_BIT((j % 8)), code[(j / 8)]);
+			bit_extract = no_os_field_get(NO_OS_BIT((j & 0x7)), code[(j / 8)]);
 			if (bit_extract)
 				count++;
 		}
@@ -2284,7 +2281,7 @@ int admt4000_sdp_getval_gpio0_busy(struct admt4000_dev *device, uint8_t *val)
 	if (ret)
 		return ret;
 	if (direction != NO_OS_GPIO_IN)
-		return ret; // TODO: Should return relevant info
+		return EIO; 
 	ret = no_os_gpio_get_value(device->gpio_gpio0_busy, val);
 
 	return ret;
