@@ -1335,7 +1335,7 @@ int admt4000_set_storage_config(struct admt4000_dev *device, uint8_t storage)
  * @brief Gets conversion start's sync mode.
  *
  * @param device - The device structure.
- * @param storage - Stores the Conversion Sync Setting.
+ * @param sync - Stores the Conversion Sync Setting.
  *
  * @return 0 in case of success, negative error code otherwise.
 *******************************************************************************/
@@ -1365,7 +1365,7 @@ int admt4000_get_cnv_sync(struct admt4000_dev *device,
  * @brief Sets conversion start's sync mode.
  *
  * @param device - The device structure.
- * @param storage - Conversion Sync setting to write.
+ * @param sync - Conversion Sync setting to write.
  *
  * @return 0 in case of success, negative error code otherwise.
 *******************************************************************************/
@@ -2130,7 +2130,7 @@ int admt4000_get_converted_hphase_config(struct admt4000_dev *device,
  *
  * @param device - The device structure.
  * @param hpha - The HxPHA register to interact with (1,2,3,8).
- * @param mag - HPHA data to write (Raw).
+ * @param pha - HPHA data to write (Raw).
  *
  * @return 0 in case of success, negative error code otherwise.
 *******************************************************************************/
@@ -2179,7 +2179,7 @@ int admt4000_set_hphase_config(struct admt4000_dev *device, uint8_t hpha,
  *
  * @param device - The device structure.
  * @param hpha - The HxPHA register to interact with (1,2,3,8).
- * @param mag - HPHA data to write (Converted).
+ * @param pha - HPHA data to write (Converted).
  *
  * @return 0 in case of success, negative error code otherwise.
 *******************************************************************************/
