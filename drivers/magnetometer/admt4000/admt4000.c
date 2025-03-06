@@ -669,11 +669,11 @@ int admt4000_set_cnv(struct admt4000_dev *device, bool is_rising)
 	if (is_rising)
 		ret = admt4000_reg_update(device, ADMT4000_AGP_REG_CNVPAGE,
 					  ADMT4000_CNV_EDGE_MASK, no_os_field_prep(ADMT4000_CNV_EDGE_MASK,
-						  ADMT4000_RISING_EDGE));
+						              ADMT4000_RISING_EDGE));
 	else
 		ret =  admt4000_reg_update(device, ADMT4000_AGP_REG_CNVPAGE,
 					   ADMT4000_CNV_EDGE_MASK, no_os_field_prep(ADMT4000_CNV_EDGE_MASK,
-						   ADMT4000_FALLING_EDGE));
+						               ADMT4000_FALLING_EDGE));
 	if (ret)
 		return ret;
 
@@ -1456,7 +1456,7 @@ int admt4000_set_angle_filt(struct admt4000_dev *device, bool is_filtered)
 
 	ret =  admt4000_reg_update(device, ADMT4000_02_REG_GENERAL,
 				   ADMT4000_ANGL_FILT_MASK, no_os_field_prep(ADMT4000_ANGL_FILT_MASK,
-					   (uint8_t)is_filtered));
+					               (uint8_t)is_filtered));
 	if (ret)
 		return ret;
 
@@ -1518,7 +1518,7 @@ int admt4000_set_h8_ctrl(struct admt4000_dev *device, bool is_user_supplied)
 
 	ret = admt4000_reg_update(device, ADMT4000_02_REG_GENERAL,
 				  ADMT4000_H8_CTRL_MASK, no_os_field_prep(ADMT4000_H8_CTRL_MASK,
-					  (uint8_t)is_user_supplied));
+					              (uint8_t)is_user_supplied));
 	if (ret)
 		return ret;
 
@@ -1646,7 +1646,7 @@ int admt4000_set_cnv_mode(struct admt4000_dev *device, bool is_one_shot)
 
 	ret = admt4000_reg_update(device, ADMT4000_02_REG_GENERAL,
 				  ADMT4000_CNV_MODE_MASK, (uint16_t) no_os_field_prep(ADMT4000_CNV_MODE_MASK,
-					  (uint8_t)is_one_shot));
+					              (uint8_t)is_one_shot));
 	if (ret)
 		return ret;
 
