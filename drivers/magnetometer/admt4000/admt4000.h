@@ -328,7 +328,7 @@ int admt4000_init(struct admt4000_dev **device,
  * @param dev - The device structure.
  * @return 0 in case of success, negative error code otherwise.
  */
-int admt4000_remove(struct admt4000_dev *dev);
+int admt4000_remove(struct admt4000_dev *device);
 
 /**
  * @brief Compute CRC for given data stream.
