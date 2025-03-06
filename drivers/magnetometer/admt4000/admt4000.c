@@ -470,7 +470,7 @@ int admt4000_update_ecc(struct admt4000_dev *device, uint16_t *ecc_val)
 	temp = no_os_get_unaligned_be16(ecc);
 
 	/* Store in return variable */
-	if (temp != NULL) 
+	if (temp != NULL)
 		*ecc_val = temp;
 	else
 		return -EINVAL;
@@ -532,7 +532,7 @@ int admt4000_read(struct admt4000_dev *device, uint8_t reg_addr,
 	if (no_os_field_get(ADMT4000_RCV_CRC, buf[3]) != excess)
 		return -EBADMSG;
 
-	if (buf[3] != NULL) 
+	if (buf[3] != NULL)
 		*verif = buf[3];
 	else
 		return -EINVAL;
