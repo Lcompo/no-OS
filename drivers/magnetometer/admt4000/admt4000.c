@@ -130,7 +130,7 @@ int admt4000_init(struct admt4000_dev **device,
 	if (ret)
 		goto err;
 
-	/* Delay */
+	/* Delay for GPIO to lines to settle before clearing faults*/
 	no_os_mdelay(10);
 
 	ret = admt4000_clear_all_faults(dev);
