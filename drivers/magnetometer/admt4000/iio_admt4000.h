@@ -38,18 +38,18 @@
 #include "iio.h"
 
 struct admt4000_iio_dev {
-    struct admt4000_dev *admt4000_desc;
-    struct iio_device *iio_dev;
-    uint32_t active_channels;
-    uint8_t no_of_active_channels;
+	struct admt4000_dev *admt4000_desc;
+	struct iio_device *iio_dev;
+	uint32_t active_channels;
+	uint8_t no_of_active_channels;
 };
 
 struct admt4000_iio_dev_init_param {
-    struct admt4000_init_param *admt4000_dev_init;
+	struct admt4000_init_param *admt4000_dev_init;
 };
 
 int admt4000_iio_init(struct admt4000_iio_dev **,
-                      struct admt4000_iio_dev_init_param *);
+		      struct admt4000_iio_dev_init_param *);
 int admt4000_iio_remove(struct admt4000_iio_dev *);
 
 #endif
