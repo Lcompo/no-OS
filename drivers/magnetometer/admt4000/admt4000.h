@@ -197,24 +197,27 @@ extern "C" {
 #define ADMT4000_ECC_EN_COMM            0x0000
 #define ADMT4000_ECC_DIS_COMM           0x4D54
 
+/* Scaling factor */
+#define ADMT4000_SF                10000000 // 10M
+
 /* Angle to degree conversion */
-#define ADMT4000_ABS_ANGLE_RES          360.0 / 1024.0
-#define ADMT4000_ANGLE_RES              360.0 / 4096.0
+#define ADMT4000_ABS_ANGLE_RES          3515625 // (360.0 / 1024.0 * ADMT4000_SF) 
+#define ADMT4000_ANGLE_RES              878906 // (360.0 / 4096.0  * ADMT4000_SF) Truncated
 
 /* Turn Count Conversion */
 #define ADMT4000_TURN_CNT_THRES         0x35
 #define ADMT4000_TURN_CNT_TWOS          64
 
 /* Conversion Factors */
-#define ADMT4000_RADIUS_RES             0.000924 // mV/V unit
-#define ADMT4000_FIXED_VOLT_3P3V_RES    0.003222 // mV/bit
-#define ADMT4000_FIXED_VOLT_5V_RES      0.0048828 // mV/bit
+#define ADMT4000_RADIUS_RES             9240 // (0.000924 * ADMT4000_SF) // mV/V unit
+#define ADMT4000_FIXED_VOLT_3P3V_RES    32220 // (0.003222 * ADMT4000_SF) // mV/bit
+#define ADMT4000_FIXED_VOLT_5V_RES      48828 // (0.0048828 * ADMT4000_SF) // mV/bit
 #define ADMT4000_8BIT_THRES             0x7f // 2's complement threhsold
 #define ADMT4000_8BIT_TWOS              0x100 // 2's complement factor
-#define ADMT4000_DIAG_RESISTOR_RES      0.78125 // in percent
-#define ADMT4000_CORDIC_SCALER          0.6072 // for hmag hpha
-#define ADMT4000_HMAG_RES               0.005493 // hmag resolution
-#define ADMT4000_HPHA_RES               0.087891 // hpha resolution
+#define ADMT4000_DIAG_RESISTOR_RES      7812500 // (0.78125 * ADMT4000_SF) // in percent
+#define ADMT4000_CORDIC_SCALER          6072000 // (0.6072 * ADMT4000_SF) // for hmag hpha
+#define ADMT4000_HMAG_RES               54930 // (0.005493 * ADMT4000_SF) // hmag resolution
+#define ADMT4000_HPHA_RES               878910 // (0.087891 * ADMT4000_SF) // hpha resolution
 
 enum admt4000_faults {
     ADMT4000_FAULT_VDD_UV,
@@ -293,7 +296,7 @@ struct admt4000_dev {
     bool is_throw_early_samples;
 
     /* Conversion factor for fixed voltage measurements (mV) */
-    float fixed_conv_factor_mv;
+    uint32_t fixed_conv_factor_mv;
 
     /* Tracker for type of angle threshold set */
     enum admt400_angle_eck_type eck_type;
@@ -386,7 +389,7 @@ int admt4000_read_fault(struct admt4000_dev *device, enum admt4000_faults fault,
 int admt4000_get_secondary_angle(struct admt4000_dev *device, uint16_t *angle);
 
 /* Get Secondary Angle Data (Converted, degrees) */
-int admt4000_get_converted_secondary_angle(struct admt4000_dev *device, float *angle);
+int admt4000_get_converted_secondary_angle(struct admt4000_dev *device, uint32_t *angle);
 
 /* Get angle raw data */
 int admt4000_get_angle(struct admt4000_dev *device, uint16_t *raw_angle,
@@ -396,7 +399,7 @@ int admt4000_get_angle(struct admt4000_dev *device, uint16_t *raw_angle,
 int admt4000_get_radius(struct admt4000_dev *device, uint16_t *radius);
 
 /* Get Converted Radius Data (mV/V) */
-int admt4000_get_converted_radius(struct admt4000_dev *device, float *radius);
+int admt4000_get_converted_radius(struct admt4000_dev *device, uint32_t *radius);
 
 /* Obtain status of selected reference resistor (GMR turn count) */
 int admt4000_get_ref_res_state(struct admt4000_dev *device, uint8_t ref_res_num,
@@ -408,14 +411,14 @@ int admt4000_get_fixed_voltage(struct admt4000_dev *device,
 
 /* Get fixed value voltage (Volts) */
 int admt4000_get_converted_fixed_voltage(struct admt4000_dev *device,
-        float *fixed_volt);
+        uint32_t *fixed_volt);
 
 /* Read from either + or - 57% (or both) diagnostic resistor channels */
 int admt4000_get_diag_res(struct admt4000_dev *device, uint16_t *diag_meas,
                           uint8_t is_pos);
 
 /* Read percentage value from diagnostic resistors */
-int admt4000_get_converted_diag_res(struct admt4000_dev *device, float *diag_meas,
+int admt4000_get_converted_diag_res(struct admt4000_dev *device, uint32_t *diag_meas,
                                     uint8_t is_pos);
 
 /* Read raw temperature (primary or secondary) */
@@ -423,7 +426,7 @@ int admt4000_get_temp(struct admt4000_dev *device, uint16_t *temp,
                       bool is_primary);
 
 /* Read converted temperature */
-int admt4000_get_converted_temp(struct admt4000_dev *device, float *temp,
+int admt4000_get_converted_temp(struct admt4000_dev *device, uint32_t *temp,
                                 bool is_primary);
 
 /* Obtain the 8 bit equivalent storage bits from general config register */
@@ -477,13 +480,13 @@ int admt4000_gpio_func(struct admt4000_dev *device, uint8_t gpio,
 int admt4000_get_angle_thres(struct admt4000_dev *device, uint16_t *thres);
 
 /* Get angle threshold value (Degrees) */
-int admt4000_get_converted_angle_thres(struct admt4000_dev *device, float *thres);
+int admt4000_get_converted_angle_thres(struct admt4000_dev *device, uint32_t *thres);
 
 /* Set angle threshold value (Raw) */
 int admt4000_set_angle_thres(struct admt4000_dev *device, uint16_t thres);
 
 /* Set angle threshold value (Degrees) */
-int admt4000_set_converted_angle_thres(struct admt4000_dev *device, float thres);
+int admt4000_set_converted_angle_thres(struct admt4000_dev *device, uint32_t thres);
 
 /* Get conversion count value */
 int admt4000_get_cnv_cnt(struct admt4000_dev *device, uint8_t *cnt);
@@ -495,25 +498,25 @@ int admt4000_set_cnv_cnt(struct admt4000_dev *device, uint8_t cnt);
 int admt4000_get_hmag_config(struct admt4000_dev *device, uint8_t hmag, uint16_t *mag);
 
 /* Get the Nth harmonic error magnitude (converted) */
-int admt4000_get_converted_hmag_config(struct admt4000_dev *device, uint8_t hmag, float *mag);
+int admt4000_get_converted_hmag_config(struct admt4000_dev *device, uint8_t hmag, uint32_t *mag);
 
 /* Set the Nth harmonic error magnitude (raw) */
 int admt4000_set_hmag_config(struct admt4000_dev *device, uint8_t hmag, uint16_t mag);
 
 /* Set the Nth harmonic error magnitude (converted) */
-int admt4000_set_converted_hmag_config(struct admt4000_dev *device, uint8_t hmag, float mag);
+int admt4000_set_converted_hmag_config(struct admt4000_dev *device, uint8_t hmag, uint32_t mag);
 
 /* Get the Nth harmonic error phase (Raw) */
 int admt4000_get_hphase_config(struct admt4000_dev *device, uint8_t hpha, uint16_t *pha);
 
 /* Get the Nth harmonic error phase (Converted) */
-int admt4000_get_converted_hphase_config(struct admt4000_dev *device, uint8_t hpha, float *pha);
+int admt4000_get_converted_hphase_config(struct admt4000_dev *device, uint8_t hpha, uint32_t *pha);
 
 /* Set the Nth harmonic error phase (Raw) */
 int admt4000_set_hphase_config(struct admt4000_dev *device, uint8_t hpha, uint16_t pha);
 
 /* Set the Nth harmonic error phase (Converted) */
-int admt4000_set_converted_hphase_config(struct admt4000_dev *device, uint8_t hpha, float pha);
+int admt4000_set_converted_hphase_config(struct admt4000_dev *device, uint8_t hpha, uint32_t pha);
 
 /* Read selected device specific ID's */
 int admt4000_get_id(struct admt4000_dev *device, uint8_t id_num, uint16_t *id);
