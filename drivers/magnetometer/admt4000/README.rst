@@ -32,8 +32,7 @@ with a high degree of angular accuracy.
 
 Applications
 ------------
-*  Rotation count detection and storage without 
-power 
+* Rotation count detection and storage without power 
 * Contactless absolute position measurement 
 * Brushless DC motor control and positioning 
 * Actuator control and positioning 
