@@ -43,7 +43,6 @@
 #include "no_os_alloc.h"
 #include "no_os_delay.h"
 
-
 static uint8_t admt4000_ecc_control_registers[] = {
     ADMT4000_02_REG_GENERAL,
     ADMT4000_02_REG_DIGIOEN,
@@ -65,11 +64,11 @@ static float admt4000_angle_conv_factors[] = {
 
 /***************************************************************************//**
  * @brief Initializes the communication peripheral and checks if the admt4000
- *		  part is present.
+ *        part is present.
  *
  * @param device - The device structure.
  * @param init_param - The structure that contains the device initial
- * 		       parameters.
+ *                     parameters.
  *
  * @return status - Result of the initialization procedure.
  *                  Example: -1 - SPI peripheral was not initialized or
