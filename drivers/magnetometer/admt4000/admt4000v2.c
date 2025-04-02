@@ -45,12 +45,15 @@
 #include <stdlib.h>
 #include <stdint.h>
 #include <stdbool.h>
-#include "admt4000v2.h"
-#include "v_admt4000.h"
 #include "no_os_spi.h"
 #include "no_os_util.h"
 #include "no_os_alloc.h"
 #include "no_os_delay.h"
+#if (V2)
+#include "admt4000v2.h"
+#else
+#include "admt4000.h"
+#endif
 
 /******************************************************************************/
 /************************ Functions Definitions *******************************/
@@ -2348,47 +2351,6 @@ int admt4000_continuous_conversion(struct admt4000_dev *device, char* in_buf, ch
 {
 	/* All registers of interest are in page 2 */
 	int ret = admt4000_set_page(device, false);
-
-	return ret;
-}
-
-int admt4000_get_regmap(struct admt4000_dev *device, VirtualADMT4000 *v, char* out_buf)
-{
-	uint16_t readval = 0;
-	uint8_t verif;
-	VirtualRegister *v_reg;
-	bool is_page_zero = false;
-	int ret = 0;
-
-	// Get page original state
-	ret |= admt4000_get_page(device, &is_page_zero);
-
-	for (int i=0; i<v->numRegisters; i++) {
-		v_reg = &v->regMap[i];
-
-		switch (v_reg->page)
-		{
-		case ZERO:
-			/* All registers of interest are in page 0 */
-			ret |= admt4000_set_page(device, true);
-			break;
-		case TWO:
-			/* All registers of interest are in page 2 */
-			ret |= admt4000_set_page(device, false);
-			break;
-		
-		default:
-			/* If Agnositc all registers of interest are in page 2 */
-			ret |= admt4000_set_page(device, true);
-			break;
-		}
-
-		ret |= admt4000_read(device, v_reg->addr, &readval, &verif);
-		partition_uint16_to_char(readval, v_reg->val);
-	}
-
-	// Revert page original state
-	ret |= admt4000_set_page(device, &is_page_zero);
 
 	return ret;
 }

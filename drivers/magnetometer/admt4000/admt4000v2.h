@@ -53,7 +53,6 @@
 #include "no_os_spi.h"
 #include "no_os_gpio.h"
 #include "no_os_util.h"
-#include "v_admt4000.h"
 
 /******************************************************************************/
 /********************** Macros and Constants Definitions **********************/
@@ -292,9 +291,6 @@ struct admt4000_dev {
 	struct no_os_gpio_desc *gpio_coil_rs;
 	struct no_os_gpio_desc *gpio_gpio0_busy;
 	struct no_os_gpio_desc *gpio_shdn_n;
-
-	/* Virtual virtual regmap*/
-	struct VirtualADMT4000 regmap;
 
 	/* Boolean indicator if setup in page 0 or not */
 	bool is_page_zero;
@@ -556,9 +552,6 @@ int admt4000_sdp_pulse_coil_rs(struct admt4000_dev *device);
 
 /* Get value of ADMT4000 GPIO_BUSY */
 int admt4000_sdp_getval_gpio0_busy(struct admt4000_dev *device, uint8_t *val);
-
-/* Get the register map */
-int admt4000_get_regmap(struct admt4000_dev *device, VirtualADMT4000 *v, char* out_buf);
 
 #endif	/* __ADMT4000V2_H__ */
 
