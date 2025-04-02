@@ -666,14 +666,15 @@ int admt4000_set_cnv(struct admt4000_dev *device, bool is_rising)
 {
 	int ret;
 
-	if (is_rising)
+	if (is_rising) {
+		uint32_t temp = no_os_field_prep(ADMT4000_CNV_EDGE_MASK, ADMT4000_RISING_EDGE);
 		ret = admt4000_reg_update(device, ADMT4000_AGP_REG_CNVPAGE,
-					  ADMT4000_CNV_EDGE_MASK, no_os_field_prep(ADMT4000_CNV_EDGE_MASK,
-						              ADMT4000_RISING_EDGE));
-	else
+					  ADMT4000_CNV_EDGE_MASK, temp);
+	} else {
+		uint32_t temp = no_os_field_prep(ADMT4000_CNV_EDGE_MASK, ADMT4000_FALLING_EDGE);
 		ret =  admt4000_reg_update(device, ADMT4000_AGP_REG_CNVPAGE,
-					   ADMT4000_CNV_EDGE_MASK, no_os_field_prep(ADMT4000_CNV_EDGE_MASK,
-						               ADMT4000_FALLING_EDGE));
+					   ADMT4000_CNV_EDGE_MASK, temp);
+	}
 	if (ret)
 		return ret;
 
@@ -827,9 +828,10 @@ int admt4000_set_gpio(struct admt4000_dev *device, uint8_t gpio, bool logic)
 	if (gpio > ADMT4000_MAX_GPIO_INDEX)
 		return -EINVAL;
 
+	uint32_t temp = no_os_field_prep(ADMT4000_GPIO_LOGIC(gpio), (uint8_t)logic);
 	ret = admt4000_reg_update(device, ADMT4000_AGP_REG_DGIO,
-				  ADMT4000_GPIO_LOGIC(gpio), no_os_field_prep(ADMT4000_GPIO_LOGIC(gpio),
-					  (uint8_t)logic));
+				  ADMT4000_GPIO_LOGIC(gpio), temp);
+
 	if (ret)
 		return ret;
 
@@ -1454,9 +1456,10 @@ int admt4000_set_angle_filt(struct admt4000_dev *device, bool is_filtered)
 	if (ret)
 		return ret;
 
+	uint32_t temp = no_os_field_prep(ADMT4000_ANGL_FILT_MASK, (uint8_t)is_filtered);
 	ret =  admt4000_reg_update(device, ADMT4000_02_REG_GENERAL,
-				   ADMT4000_ANGL_FILT_MASK, no_os_field_prep(ADMT4000_ANGL_FILT_MASK,
-					               (uint8_t)is_filtered));
+				   ADMT4000_ANGL_FILT_MASK, temp);
+
 	if (ret)
 		return ret;
 
@@ -1516,9 +1519,11 @@ int admt4000_set_h8_ctrl(struct admt4000_dev *device, bool is_user_supplied)
 	if (ret)
 		return ret;
 
+	uint32_t temp = no_os_field_prep(ADMT4000_H8_CTRL_MASK,
+					 (uint8_t)is_user_supplied);
 	ret = admt4000_reg_update(device, ADMT4000_02_REG_GENERAL,
-				  ADMT4000_H8_CTRL_MASK, no_os_field_prep(ADMT4000_H8_CTRL_MASK,
-					              (uint8_t)is_user_supplied));
+				  ADMT4000_H8_CTRL_MASK, temp);
+
 	if (ret)
 		return ret;
 
@@ -1644,9 +1649,10 @@ int admt4000_set_cnv_mode(struct admt4000_dev *device, bool is_one_shot)
 	if (ret)
 		return ret;
 
+	uint32_t temp = no_os_field_prep(ADMT4000_CNV_MODE_MASK, (uint8_t)is_one_shot);
 	ret = admt4000_reg_update(device, ADMT4000_02_REG_GENERAL,
-				  ADMT4000_CNV_MODE_MASK, (uint16_t) no_os_field_prep(ADMT4000_CNV_MODE_MASK,
-					              (uint8_t)is_one_shot));
+				  ADMT4000_CNV_MODE_MASK, (uint16_t)temp);
+
 	if (ret)
 		return ret;
 
