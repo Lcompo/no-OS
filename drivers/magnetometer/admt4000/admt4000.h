@@ -314,234 +314,588 @@ struct admt4000_init_param {
 
 int test(char* in_buf, char*out_buf);
 
-/* Initializes the device structure */
+/**
+ * @brief Initializes the device structure.
+ * @param device - The device structure.
+ * @param init_param - The initialization parameters.
+ * @return 0 in case of success, negative error code otherwise.
+ */
 int admt4000_init(struct admt4000_dev **device,
 		  struct admt4000_init_param init_param);
 
-/* Deallocates the resources for the device structure */
+/**
+ * @brief Deallocates the resources for the device structure.
+ * @param dev - The device structure.
+ * @return 0 in case of success, negative error code otherwise.
+ */
 int admt4000_remove(struct admt4000_dev *dev);
 
-/* Compute CRC for given data stream */
+/**
+ * @brief Compute CRC for given data stream.
+ * @param reg_addr - Register address.
+ * @param reg_data - Register data.
+ * @param excess - Excess bits.
+ * @param is_write - Write flag.
+ * @param crc_ret - Computed CRC.
+ * @return 0 in case of success, negative error code otherwise.
+ */
 int admt4000_compute_crc(long reg_addr, uint16_t reg_data, uint8_t excess,
 			 bool is_write, uint8_t *crc_ret);
 
-/* Encodes the input data using ECC algorithm of admt4000 */
+/**
+ * @brief Encodes the input data using ECC algorithm of admt4000.
+ * @param parity_num - Parity number.
+ * @param code_length - Code length.
+ * @param code - Code.
+ * @param input - Input data.
+ * @param size_code - Size of code.
+ * @param size_input - Size of input data.
+ * @param ecc - ECC output.
+ * @return 0 in case of success, negative error code otherwise.
+ */
 int admt4000_ecc_encode(uint8_t *parity_num, uint8_t *code_length,
 			uint8_t *code, uint8_t *input, uint8_t size_code, uint8_t size_input,
 			uint8_t *ecc);
 
-/* Hamming Calculator to generate the bit value during encoding */
+/**
+ * @brief Hamming Calculator to generate the bit value during encoding.
+ * @param position - Position.
+ * @param code_length - Code length.
+ * @param code - Code.
+ * @return 0 in case of success, negative error code otherwise.
+ */
 int admt4000_hamming_calc(uint8_t position,
 			  uint8_t code_length, uint8_t *code);
 
-/* Performs error checking on sequence of interest i.e. ECC bytes */
+/**
+ * @brief Performs error checking on sequence of interest i.e. ECC bytes.
+ * @param parity_num - Parity number.
+ * @param code_length - Code length.
+ * @param code - Code.
+ * @param error_pos - Error position.
+ * @return 0 in case of success, negative error code otherwise.
+ */
 int admt4000_error_check(uint8_t parity_num,
 			 uint8_t code_length, uint8_t *code, uint8_t *error_pos);
 
-/* Update ECC contents */
+/**
+ * @brief Update ECC contents.
+ * @param device - The device structure.
+ * @param ecc_val - ECC value.
+ * @return 0 in case of success, negative error code otherwise.
+ */
 int admt4000_update_ecc(struct admt4000_dev *device, uint16_t *ecc_val);
 
-/* Read from selected register */
+/**
+ * @brief Read from selected register.
+ * @param device - The device structure.
+ * @param reg_addr - Register address.
+ * @param reg_data - Register data.
+ * @param verif - Verification data.
+ * @return 0 in case of success, negative error code otherwise.
+ */
 int admt4000_read(struct admt4000_dev *device, uint8_t reg_addr,
 		  uint16_t *reg_data, uint8_t *verif);
 
-/* Write to selected register */
+/**
+ * @brief Write to selected register.
+ * @param device - The device structure.
+ * @param reg_addr - Register address.
+ * @param reg_data - Register data.
+ * @return 0 in case of success, negative error code otherwise.
+ */
 int admt4000_write(struct admt4000_dev *device, uint8_t reg_addr,
 		   uint16_t reg_data);
 
-/* Update register fields */
+/**
+ * @brief Update register fields.
+ * @param device - The device structure.
+ * @param reg_addr - Register address.
+ * @param update_mask - Update mask.
+ * @param update_val - Update value.
+ * @return 0 in case of success, negative error code otherwise.
+ */
 int admt4000_reg_update(struct admt4000_dev *device, uint8_t reg_addr,
 			uint16_t update_mask, uint16_t update_val);
 
-/* Switch the device to either page zero or page two */
+/**
+ * @brief Switch the device to either page zero or page two.
+ * @param device - The device structure.
+ * @param is_page_zero - Page zero flag.
+ * @return 0 in case of success, negative error code otherwise.
+ */
 int admt4000_set_page(struct admt4000_dev *device, bool is_page_zero);
 
-/* Get page configuration */
+/**
+ * @brief Get page configuration.
+ * @param device - The device structure.
+ * @param is_page_zero - Page zero flag.
+ * @return 0 in case of success, negative error code otherwise.
+ */
 int admt4000_get_page(struct admt4000_dev *device, bool *is_page_zero);
 
-/* Sets or resets the CNV bits to mimic fall/rising edge */
+/**
+ * @brief Sets or resets the CNV bits to mimic fall/rising edge.
+ * @param device - The device structure.
+ * @param is_rising - Rising edge flag.
+ * @return 0 in case of success, negative error code otherwise.
+ */
 int admt4000_set_cnv(struct admt4000_dev *device, bool is_rising);
 
-/* Get CNV bits configuration */
+/**
+ * @brief Get CNV bits configuration.
+ * @param device - The device structure.
+ * @param is_rising - Rising edge flag.
+ * @return 0 in case of success, negative error code otherwise.
+ */
 int admt4000_get_cnv(struct admt4000_dev *device, bool *is_rising);
 
-/* Gets raw data from ABSANGLE and ANGLE registers */
+/**
+ * @brief Gets raw data from ABSANGLE and ANGLE registers.
+ * @param device - The device structure.
+ * @param angle_data - Angle data.
+ * @return 0 in case of success, negative error code otherwise.
+ */
 int admt4000_raw_angle_read(struct admt4000_dev *device, uint16_t *angle_data);
 
-/* Parses raw data from ABSANGLE and ANGLE registers */
+/**
+ * @brief Parses raw data from ABSANGLE and ANGLE registers.
+ * @param device - The device structure.
+ * @param turns - Turns data.
+ * @param angle - Angle data.
+ * @return 0 in case of success, negative error code otherwise.
+ */
 int admt4000_get_raw_turns_and_angle(struct admt4000_dev *device,
 				     uint8_t *turns,
 				     uint16_t *angle);
 
-/* Get selected GPIO's logic level */
+/**
+ * @brief Get selected GPIO's logic level.
+ * @param device - The device structure.
+ * @param gpio - GPIO number.
+ * @param logic - Logic level.
+ * @return 0 in case of success, negative error code otherwise.
+ */
 int admt4000_get_gpio(struct admt4000_dev *device, uint8_t gpio, bool *logic);
 
-/* Set selected GPIO's logic level */
+/**
+ * @brief Set selected GPIO's logic level.
+ * @param device - The device structure.
+ * @param gpio - GPIO number.
+ * @param logic - Logic level.
+ * @return 0 in case of success, negative error code otherwise.
+ */
 int admt4000_set_gpio(struct admt4000_dev *device, uint8_t gpio, bool logic);
 
-/* Clear all faults in the fault register */
+/**
+ * @brief Clear all faults in the fault register.
+ * @param device - The device structure.
+ * @return 0 in case of success, negative error code otherwise.
+ */
 int admt4000_clear_all_faults(struct admt4000_dev *device);
 
-/* Reads selected fault's status */
+/**
+ * @brief Reads selected fault's status.
+ * @param device - The device structure.
+ * @param fault - Fault type.
+ * @param is_flagged - Fault status.
+ * @return 0 in case of success, negative error code otherwise.
+ */
 int admt4000_read_fault(struct admt4000_dev *device, enum admt4000_faults fault,
 			bool *is_flagged);
 
-/* Get secondary angle raw data */
+/**
+ * @brief Get secondary angle raw data.
+ * @param device - The device structure.
+ * @param angle - Angle data.
+ * @return 0 in case of success, negative error code otherwise.
+ */
 int admt4000_get_secondary_angle(struct admt4000_dev *device, uint16_t *angle);
 
-/* Get Secondary Angle Data (Converted, degrees) */
+/**
+ * @brief Get Secondary Angle Data (Converted, degrees).
+ * @param device - The device structure.
+ * @param angle - Angle data.
+ * @return 0 in case of success, negative error code otherwise.
+ */
 int admt4000_get_converted_secondary_angle(struct admt4000_dev *device,
 		uint32_t *angle);
 
-/* Get angle raw data */
+/**
+ * @brief Get angle raw data.
+ * @param device - The device structure.
+ * @param raw_angle - Raw angle data.
+ * @param angle_type - Angle type.
+ * @return 0 in case of success, negative error code otherwise.
+ */
 int admt4000_get_angle(struct admt4000_dev *device, uint16_t *raw_angle,
 		       enum admt4000_angle_type angle_type);
 
-/* Get radius raw data */
+/**
+ * @brief Get radius raw data.
+ * @param device - The device structure.
+ * @param radius - Radius data.
+ * @return 0 in case of success, negative error code otherwise.
+ */
 int admt4000_get_radius(struct admt4000_dev *device, uint16_t *radius);
 
-/* Get Converted Radius Data (mV/V) */
+/**
+ * @brief Get Converted Radius Data (mV/V).
+ * @param device - The device structure.
+ * @param radius - Radius data.
+ * @return 0 in case of success, negative error code otherwise.
+ */
 int admt4000_get_converted_radius(struct admt4000_dev *device,
 				  uint32_t *radius);
 
-/* Obtain status of selected reference resistor (GMR turn count) */
+/**
+ * @brief Obtain status of selected reference resistor (GMR turn count).
+ * @param device - The device structure.
+ * @param ref_res_num - Reference resistor number.
+ * @param is_ok - Status.
+ * @return 0 in case of success, negative error code otherwise.
+ */
 int admt4000_get_ref_res_state(struct admt4000_dev *device, uint8_t ref_res_num,
 			       bool *is_ok);
 
-/* Get fixed value voltage to GMR turn count sensor */
+/**
+ * @brief Get fixed value voltage to GMR turn count sensor.
+ * @param device - The device structure.
+ * @param fixed_volt - Fixed voltage.
+ * @return 0 in case of success, negative error code otherwise.
+ */
 int admt4000_get_fixed_voltage(struct admt4000_dev *device,
 			       uint8_t *fixed_volt);
 
-/* Get fixed value voltage (Volts) */
+/**
+ * @brief Get fixed value voltage (Volts).
+ * @param device - The device structure.
+ * @param fixed_volt - Fixed voltage.
+ * @return 0 in case of success, negative error code otherwise.
+ */
 int admt4000_get_converted_fixed_voltage(struct admt4000_dev *device,
 		uint32_t *fixed_volt);
 
-/* Read from either + or - 57% (or both) diagnostic resistor channels */
+/**
+ * @brief Read from either + or - 57% (or both) diagnostic resistor channels.
+ * @param device - The device structure.
+ * @param diag_meas - Diagnostic measurement.
+ * @param is_pos - Positive channel flag.
+ * @return 0 in case of success, negative error code otherwise.
+ */
 int admt4000_get_diag_res(struct admt4000_dev *device, uint16_t *diag_meas,
 			  uint8_t is_pos);
 
-/* Read percentage value from diagnostic resistors */
+/**
+ * @brief Read percentage value from diagnostic resistors.
+ * @param device - The device structure.
+ * @param diag_meas - Diagnostic measurement.
+ * @param is_pos - Positive channel flag.
+ * @return 0 in case of success, negative error code otherwise.
+ */
 int admt4000_get_converted_diag_res(struct admt4000_dev *device,
 				    uint32_t *diag_meas,
 				    uint8_t is_pos);
 
-/* Read raw temperature (primary or secondary) */
+/**
+ * @brief Read raw temperature (primary or secondary).
+ * @param device - The device structure.
+ * @param temp - Temperature data.
+ * @param is_primary - Primary temperature flag.
+ * @return 0 in case of success, negative error code otherwise.
+ */
 int admt4000_get_temp(struct admt4000_dev *device, uint16_t *temp,
 		      bool is_primary);
 
-/* Read converted temperature */
+/**
+ * @brief Read converted temperature.
+ * @param device - The device structure.
+ * @param temp - Temperature data.
+ * @param is_primary - Primary temperature flag.
+ * @return 0 in case of success, negative error code otherwise.
+ */
 int admt4000_get_converted_temp(struct admt4000_dev *device, uint32_t *temp,
 				bool is_primary);
 
-/* Obtain the 8 bit equivalent storage bits from general config register */
+/**
+ * @brief Obtain the 8 bit equivalent storage bits from general config register.
+ * @param device - The device structure.
+ * @param storage - Storage configuration.
+ * @return 0 in case of success, negative error code otherwise.
+ */
 int admt4000_get_storage_config(struct admt4000_dev *device, uint8_t *storage);
 
-/* Set storage config bits */
+/**
+ * @brief Set storage config bits.
+ * @param device - The device structure.
+ * @param storage - Storage configuration.
+ * @return 0 in case of success, negative error code otherwise.
+ */
 int admt4000_set_storage_config(struct admt4000_dev *device, uint8_t storage);
 
-/* Get conversion synchronization mode from general config register */
+/**
+ * @brief Get conversion synchronization mode from general config register.
+ * @param device - The device structure.
+ * @param sync - Synchronization mode.
+ * @return 0 in case of success, negative error code otherwise.
+ */
 int admt4000_get_cnv_sync(struct admt4000_dev *device,
 			  enum admt4000_cnv_sync *sync);
 
-/* Set conversion synchronization mode */
+/**
+ * @brief Set conversion synchronization mode.
+ * @param device - The device structure.
+ * @param sync - Synchronization mode.
+ * @return 0 in case of success, negative error code otherwise.
+ */
 int admt4000_set_cnv_sync(struct admt4000_dev *device,
 			  enum admt4000_cnv_sync sync);
 
-/* Check if filter is enabled on angle conversions */
+/**
+ * @brief Check if filter is enabled on angle conversions.
+ * @param device - The device structure.
+ * @param is_filtered - Filter status.
+ * @return 0 in case of success, negative error code otherwise.
+ */
 int admt4000_get_angle_filt(struct admt4000_dev *device, bool *is_filtered);
 
-/* Configure filter setting */
+/**
+ * @brief Configure filter setting.
+ * @param device - The device structure.
+ * @param is_filtered - Filter status.
+ * @return 0 in case of success, negative error code otherwise.
+ */
 int admt4000_set_angle_filt(struct admt4000_dev *device, bool is_filtered);
 
-/* Get 8th harmonic error correction configuration (user or ADI) */
+/**
+ * @brief Get 8th harmonic error correction configuration (user or ADI).
+ * @param device - The device structure.
+ * @param is_user_supplied - User supplied flag.
+ * @return 0 in case of success, negative error code otherwise.
+ */
 int admt4000_get_h8_ctrl(struct admt4000_dev *device, bool *is_user_supplied);
 
-/* Configure the source of 8th harmonic error correction (user or ADI) */
+/**
+ * @brief Configure the source of 8th harmonic error correction (user or ADI).
+ * @param device - The device structure.
+ * @param is_user_supplied - User supplied flag.
+ * @return 0 in case of success, negative error code otherwise.
+ */
 int admt4000_set_h8_ctrl(struct admt4000_dev *device, bool is_user_supplied);
 
-/* Get the sequencer mode configuration */
+/**
+ * @brief Get the sequencer mode configuration.
+ * @param device - The device structure.
+ * @param seq - Sequencer mode.
+ * @return 0 in case of success, negative error code otherwise.
+ */
 int admt4000_get_seq_mode(struct admt4000_dev *device,
 			  enum admt4000_seq_mode *seq);
 
-/* Set the sequencer mode configuration */
+/**
+ * @brief Set the sequencer mode configuration.
+ * @param device - The device structure.
+ * @param seq - Sequencer mode.
+ * @return 0 in case of success, negative error code otherwise.
+ */
 int admt4000_set_seq_mode(struct admt4000_dev *device,
 			  enum admt4000_seq_mode seq);
 
-/* Get conversion mode configuration */
+/**
+ * @brief Get conversion mode configuration.
+ * @param device - The device structure.
+ * @param is_one_shot - One shot mode flag.
+ * @return 0 in case of success, negative error code otherwise.
+ */
 int admt4000_get_cnv_mode(struct admt4000_dev *device, bool *is_one_shot);
 
-/* Set conversion mode */
+/**
+ * @brief Set conversion mode.
+ * @param device - The device structure.
+ * @param is_one_shot - One shot mode flag.
+ * @return 0 in case of success, negative error code otherwise.
+ */
 int admt4000_set_cnv_mode(struct admt4000_dev *device, bool is_one_shot);
 
-/* En/disables selected GPIO output driver. If disabled, serves as input */
+/**
+ * @brief En/disables selected GPIO output driver. If disabled, serves as input.
+ * @param device - The device structure.
+ * @param gpio - GPIO number.
+ * @param is_en - Enable flag.
+ * @return 0 in case of success, negative error code otherwise.
+ */
 int admt4000_io_en(struct admt4000_dev *device, uint8_t gpio, bool is_en);
 
-/* Configures between alt function of GPIO function for selected GPIO */
+/**
+ * @brief Configures between alt function of GPIO function for selected GPIO.
+ * @param device - The device structure.
+ * @param gpio - GPIO number.
+ * @param is_alt_func - Alternate function flag.
+ * @return 0 in case of success, negative error code otherwise.
+ */
 int admt4000_gpio_func(struct admt4000_dev *device, uint8_t gpio,
 		       bool is_alt_func);
 
-/* Get angle threshold value (Raw) */
+/**
+ * @brief Get angle threshold value (Raw).
+ * @param device - The device structure.
+ * @param thres - Threshold value.
+ * @return 0 in case of success, negative error code otherwise.
+ */
 int admt4000_get_angle_thres(struct admt4000_dev *device, uint16_t *thres);
 
-/* Get angle threshold value (Degrees) */
+/**
+ * @brief Get angle threshold value (Degrees).
+ * @param device - The device structure.
+ * @param thres - Threshold value.
+ * @return 0 in case of success, negative error code otherwise.
+ */
 int admt4000_get_converted_angle_thres(struct admt4000_dev *device,
 				       uint32_t *thres);
 
-/* Set angle threshold value (Raw) */
+/**
+ * @brief Set angle threshold value (Raw).
+ * @param device - The device structure.
+ * @param thres - Threshold value.
+ * @return 0 in case of success, negative error code otherwise.
+ */
 int admt4000_set_angle_thres(struct admt4000_dev *device, uint16_t thres);
 
-/* Set angle threshold value (Degrees) */
+/**
+ * @brief Set angle threshold value (Degrees).
+ * @param device - The device structure.
+ * @param thres - Threshold value.
+ * @return 0 in case of success, negative error code otherwise.
+ */
 int admt4000_set_converted_angle_thres(struct admt4000_dev *device,
 				       uint32_t thres);
 
-/* Get conversion count value */
+/**
+ * @brief Get conversion count value.
+ * @param device - The device structure.
+ * @param cnt - Conversion count.
+ * @return 0 in case of success, negative error code otherwise.
+ */
 int admt4000_get_cnv_cnt(struct admt4000_dev *device, uint8_t *cnt);
 
-/* Set conversion count value */
+/**
+ * @brief Set conversion count value.
+ * @param device - The device structure.
+ * @param cnt - Conversion count.
+ * @return 0 in case of success, negative error code otherwise.
+ */
 int admt4000_set_cnv_cnt(struct admt4000_dev *device, uint8_t cnt);
 
-/* Get the Nth harmonic error magnitude (raw) */
+/**
+ * @brief Get the Nth harmonic error magnitude (raw).
+ * @param device - The device structure.
+ * @param hmag - Harmonic magnitude.
+ * @param mag - Magnitude value.
+ * @return 0 in case of success, negative error code otherwise.
+ */
 int admt4000_get_hmag_config(struct admt4000_dev *device, uint8_t hmag,
 			     uint16_t *mag);
 
-/* Get the Nth harmonic error magnitude (converted) */
+/**
+ * @brief Get the Nth harmonic error magnitude (converted).
+ * @param device - The device structure.
+ * @param hmag - Harmonic magnitude.
+ * @param mag - Magnitude value.
+ * @return 0 in case of success, negative error code otherwise.
+ */
 int admt4000_get_converted_hmag_config(struct admt4000_dev *device,
 				       uint8_t hmag, uint32_t *mag);
 
-/* Set the Nth harmonic error magnitude (raw) */
+/**
+ * @brief Set the Nth harmonic error magnitude (raw).
+ * @param device - The device structure.
+ * @param hmag - Harmonic magnitude.
+ * @param mag - Magnitude value.
+ * @return 0 in case of success, negative error code otherwise.
+ */
 int admt4000_set_hmag_config(struct admt4000_dev *device, uint8_t hmag,
 			     uint16_t mag);
 
-/* Set the Nth harmonic error magnitude (converted) */
+/**
+ * @brief Set the Nth harmonic error magnitude (converted).
+ * @param device - The device structure.
+ * @param hmag - Harmonic magnitude.
+ * @param mag - Magnitude value.
+ * @return 0 in case of success, negative error code otherwise.
+ */
 int admt4000_set_converted_hmag_config(struct admt4000_dev *device,
 				       uint8_t hmag, uint32_t mag);
 
-/* Get the Nth harmonic error phase (Raw) */
+/**
+ * @brief Get the Nth harmonic error phase (Raw).
+ * @param device - The device structure.
+ * @param hpha - Harmonic phase.
+ * @param pha - Phase value.
+ * @return 0 in case of success, negative error code otherwise.
+ */
 int admt4000_get_hphase_config(struct admt4000_dev *device, uint8_t hpha,
 			       uint16_t *pha);
 
-/* Get the Nth harmonic error phase (Converted) */
+/**
+ * @brief Get the Nth harmonic error phase (Converted).
+ * @param device - The device structure.
+ * @param hpha - Harmonic phase.
+ * @param pha - Phase value.
+ * @return 0 in case of success, negative error code otherwise.
+ */
 int admt4000_get_converted_hphase_config(struct admt4000_dev *device,
 		uint8_t hpha, uint32_t *pha);
 
-/* Set the Nth harmonic error phase (Raw) */
+/**
+ * @brief Set the Nth harmonic error phase (Raw).
+ * @param device - The device structure.
+ * @param hpha - Harmonic phase.
+ * @param pha - Phase value.
+ * @return 0 in case of success, negative error code otherwise.
+ */
 int admt4000_set_hphase_config(struct admt4000_dev *device, uint8_t hpha,
 			       uint16_t pha);
 
-/* Set the Nth harmonic error phase (Converted) */
+/**
+ * @brief Set the Nth harmonic error phase (Converted).
+ * @param device - The device structure.
+ * @param hpha - Harmonic phase.
+ * @param pha - Phase value.
+ * @return 0 in case of success, negative error code otherwise.
+ */
 int admt4000_set_converted_hphase_config(struct admt4000_dev *device,
 		uint8_t hpha, uint32_t pha);
 
-/* Read selected device specific ID's */
+/**
+ * @brief Read selected device specific ID's.
+ * @param device - The device structure.
+ * @param id_num - ID number.
+ * @param id - ID value.
+ * @return 0 in case of success, negative error code otherwise.
+ */
 int admt4000_get_id(struct admt4000_dev *device, uint8_t id_num, uint16_t *id);
 
-/* En/disable the ECC functionality */
+/**
+ * @brief En/disable the ECC functionality.
+ * @param device - The device structure.
+ * @param is_en - Enable flag.
+ * @return 0 in case of success, negative error code otherwise.
+ */
 int admt4000_ecc_config(struct admt4000_dev *device, bool is_en);
 
-/* Transitions SDP's GPIO pin to high-logic */
+/**
+ * @brief Transitions SDP's GPIO pin to high-logic.
+ * @param device - The device structure.
+ * @return 0 in case of success, negative error code otherwise.
+ */
 int admt4000_sdp_pulse_coil_rs(struct admt4000_dev *device);
 
-/* Get value of ADMT4000 GPIO_BUSY */
+/**
+ * @brief Get value of ADMT4000 GPIO_BUSY.
+ * @param device - The device structure.
+ * @param val - GPIO value.
+ * @return 0 in case of success, negative error code otherwise.
+ */
 int admt4000_sdp_getval_gpio0_busy(struct admt4000_dev *device, uint8_t *val);
 
 #endif  /* __ADMT4000_H__ */
