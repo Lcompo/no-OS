@@ -161,7 +161,7 @@ int admt4000_init(struct admt4000_dev **device,
 	return 0;
 
 err:
-	no_os_free(dev);
+    admt4000_remove(dev);
 
 	return ret;
 }
