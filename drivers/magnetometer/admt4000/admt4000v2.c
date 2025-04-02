@@ -169,8 +169,6 @@ int admt4000_init(struct admt4000_dev **device,
 
 	dev->is_page_zero = bool_temp;
 
-	dev->regmap = create_regmap_ADMT4000(BRUZAB);
-
 	*device = dev;
 
 	return 0;
