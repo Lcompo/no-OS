@@ -274,7 +274,8 @@ int admt4000_ecc_encode(uint8_t *parity_num, uint8_t *code_length,
 	for (i = 0; i < *code_length; i++) {
 		/* Set to 0 */
 		if (i == ((1 << k) - 1)) {
-			code[(i / 8)] &= (uint8_t)~NO_OS_BIT((i & 0x7)); //i & 0x7 is equivalent to i % 8
+			code[(i / 8)] &= (uint8_t)~NO_OS_BIT((i &
+							      0x7)); //i & 0x7 is equivalent to i % 8
 
 			k++;
 		}
