@@ -953,7 +953,7 @@ static int admt4000_iio_read_samples(void *dev, int16_t *buff,
 	if (ret)
 		return ret;
 
-	for (i = 0; i < samples * iio_admt4000->no_of_active_channels;) {	
+	for (i = 0; i < samples * iio_admt4000->no_of_active_channels;) {
 		/* Set CNV High if in one shot mode but keep Low in continuous*/
 		if (is_one_shot) {
 			ret = admt4000_set_cnv(admt4000, true);
@@ -963,18 +963,13 @@ static int admt4000_iio_read_samples(void *dev, int16_t *buff,
 			ret = admt4000_set_cnv(admt4000, false);
 			if (ret)
 				return ret;
-		}
-		else {
+		} else {
 			ret = admt4000_set_cnv(admt4000, false);
 			if (ret)
 				return ret;
 		}
 
-		// ret = admt4000_set_cnv(admt4000, is_one_shot);
-		// if (ret)
-		// 	return ret;
-
-		//no_os_udelay(800); // previous working delay 250uS
+		no_os_udelay(800); // previous working delay 250uS
 
 		ret = admt4000_get_raw_turns_and_angle(admt4000, &turns, angle);
 		if (ret)

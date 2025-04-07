@@ -899,6 +899,22 @@ int admt4000_sdp_pulse_coil_rs(struct admt4000_dev *device);
  */
 int admt4000_sdp_getval_gpio0_busy(struct admt4000_dev *device, uint8_t *val);
 
+/**
+ * @brief Get value of ADMT4000 CNV.
+ * @param device - The device structure.
+ * @param val - GPIO value.
+ * @return 0 in case of success, negative error code otherwise.
+ */
+int admt4000_sdp_getval_cnv(struct admt4000_dev *device, uint8_t *val);
+
+/**
+ * @brief Get value of ADMT4000 ACALC.
+ * @param device - The device structure.
+ * @param val - GPIO value.
+ * @return 0 in case of success, negative error code otherwise.
+ */
+int admt4000_sdp_getval_acalc(struct admt4000_dev *device, uint8_t *val);
+
 #endif  /* __ADMT4000_H__ */
 
 #ifdef __cplusplus
