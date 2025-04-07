@@ -108,15 +108,6 @@ static int admt4000_iio_show_sdp_pulse_coil_rs(void *dev, char *buf,
 		uint32_t len,
 		const struct iio_ch_info *channel, intptr_t priv);
 
-static int admt4000_iio_store_throw_early_samples(void *dev, char *buf,
-		uint32_t len,
-		const struct iio_ch_info *channel, intptr_t priv);
-
-static int admt4000_iio_show_throw_early_samples(void *dev, char *buf,
-		uint32_t len,
-		const struct iio_ch_info *channel, intptr_t priv);
-
-
 static struct iio_attribute admt4000_iio_attrs[] = {
 	{
 		.name = "page",
@@ -157,11 +148,6 @@ static struct iio_attribute admt4000_iio_attrs[] = {
 		.name = "sdp_coil_rs",
 		.store = admt4000_iio_store_sdp_pulse_coil_rs,
 		.show = admt4000_iio_show_sdp_pulse_coil_rs,
-	},
-	{
-		.name = "throw_early_samples",
-		.store = admt4000_iio_store_throw_early_samples,
-		.show = admt4000_iio_show_throw_early_samples,
 	},
 
 	END_ATTRIBUTES_ARRAY
@@ -957,50 +943,38 @@ static int admt4000_iio_read_samples(void *dev, int16_t *buff,
 
 	admt4000 = iio_admt4000->admt4000_desc;
 
-	/* Set CNV bits to high as initialization */
-	ret = admt4000_set_cnv(admt4000, true);
-	if (ret)
-		return ret;
-
 	/* Conversion mode can be set in attribute page */
 	ret = admt4000_get_cnv_mode(admt4000, &is_one_shot);
 	if (ret)
 		return ret;
 
-	/* For continuous mode, set cnv bits low */
-	if (!is_one_shot) {
-		ret = admt4000_set_cnv(admt4000, false);
-		if (ret)
-			return ret;
+	/* Set CNV High at every start of the routine*/
+	ret = admt4000_set_cnv(admt4000, true);
+	if (ret)
+		return ret;
 
-		if (admt4000->is_throw_early_samples) {
-			/* Read dummy data points */
-			/* Based on observed behavior in iio scope */
-			for (i = 0; i < 21; i++) { // working dump: 21 samples
-				ret = admt4000_get_raw_turns_and_angle(admt4000, &turns, angle);
-				if (ret)
-					return ret;
-			}
-		}
-	}
-
-	for (i = 0; i < samples * iio_admt4000->no_of_active_channels;) {
+	for (i = 0; i < samples * iio_admt4000->no_of_active_channels;) {	
+		/* Set CNV High if in one shot mode but keep Low in continuous*/
 		if (is_one_shot) {
-			while (1) { // make sure that cnv bits are false
-				ret = admt4000_set_cnv(admt4000, false);
-				if (ret)
-					break;
+			ret = admt4000_set_cnv(admt4000, true);
+			if (ret)
+				return ret;
 
-				ret = admt4000_get_cnv(admt4000, &cnv);
-				if (ret)
-					break;
-
-				if (!cnv)
-					break;
-			}
-
-			no_os_udelay(800); // previous working delay 250uS
+			ret = admt4000_set_cnv(admt4000, false);
+			if (ret)
+				return ret;
 		}
+		else {
+			ret = admt4000_set_cnv(admt4000, false);
+			if (ret)
+				return ret;
+		}
+
+		// ret = admt4000_set_cnv(admt4000, is_one_shot);
+		// if (ret)
+		// 	return ret;
+
+		//no_os_udelay(800); // previous working delay 250uS
 
 		ret = admt4000_get_raw_turns_and_angle(admt4000, &turns, angle);
 		if (ret)
@@ -1025,35 +999,19 @@ static int admt4000_iio_read_samples(void *dev, int16_t *buff,
 			ret = admt4000_get_temp(admt4000, &buff[i], true);
 			i++;
 		}
-
-		if (is_one_shot) {
-			while (1) { // make sure cnv bits are high
-				ret = admt4000_set_cnv(admt4000, true);
-				if (ret)
-					break;
-
-				ret = admt4000_get_cnv(admt4000, &cnv);
-				if (ret)
-					break;
-
-				if (cnv)
-					break;
-			}
-		}
-
-		ret = admt4000_clear_all_faults(admt4000);
 		if (ret)
 			break;
 	}
 
-	ret = admt4000_set_cnv(admt4000, true);
-	if (ret)
-		return ret;
+	// ret = admt4000_clear_all_faults(admt4000);
+	// if (ret)
+	// 	return ret;
 
 	return samples;
 }
+
 /**
- * @brief Updates the number of active channels and the total number of
+* @brief Updates the number of active channels and the total number of
  * 		  active channels
  *
  * @param dev  - The iio device structure.
@@ -1075,78 +1033,4 @@ static int admt4000_iio_update_channels(void *dev, uint32_t mask)
 	iio_admt4000->no_of_active_channels = no_os_hweight32(mask);
 
 	return 0;
-}
-
-/**
- * @brief Handles the write request for sequencer mode attribute.
- *
- * @param device - Physical instance of a iio_axi_dac device.
- * @param buf - Value to be written to attribute.
- * @param len - Length of the data in "buf".
- * @param channel - Channel properties.
- * @param priv    - Command attribute id.
- *
- * @return Number of bytes written to device, or negative value on failure.
- */
-static int admt4000_iio_store_throw_early_samples(void *dev, char *buf,
-		uint32_t len,
-		const struct iio_ch_info *channel, intptr_t priv)
-{
-	struct admt4000_iio_dev *iio_admt4000;
-	struct admt4000_dev *admt4000;
-	int ret;
-
-	uint64_t throw_early_samples = no_os_str_to_uint32(buf);
-	uint16_t temp = 0;
-
-	if (throw_early_samples != 0 && throw_early_samples != 1)
-		return -EINVAL;
-
-	iio_admt4000 = (struct admt4000_iio_dev *)dev;
-	admt4000 = iio_admt4000->admt4000_desc;
-
-	switch (throw_early_samples) {
-	case 0:
-		admt4000->is_throw_early_samples = false;
-		break;
-	case 1:
-		admt4000->is_throw_early_samples = true;
-		break;
-	}
-
-	return len;
-}
-
-/**
- * @brief Handles the read request for h8 control enable attribute.
- *
- * @param dev     - The iio device structure.
- * @param buf	  - Command buffer to be filled with requested data.
- * @param len     - Length of the received command buffer in bytes.
- * @param channel - Command channel info.
- * @param priv    - Command attribute id.
- *
- * @return ret    - 0 in case of success, errno errors otherwise
-*/
-static int admt4000_iio_show_throw_early_samples(void *dev, char *buf,
-		uint32_t len,
-		const struct iio_ch_info *channel, intptr_t priv)
-{
-	struct admt4000_iio_dev *iio_admt4000;
-	struct admt4000_dev *admt4000;
-	int32_t throw_early_samples;
-
-	iio_admt4000 = (struct admt4000_iio_dev *)dev;
-	admt4000 = iio_admt4000->admt4000_desc;
-
-	switch (admt4000->is_throw_early_samples) {
-	case false:
-		throw_early_samples = 0;
-		break;
-	case true:
-		throw_early_samples = 1;
-		break;
-	}
-
-	return iio_format_value(buf, len, IIO_VAL_INT, 1, &throw_early_samples);
 }

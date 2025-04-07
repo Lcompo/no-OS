@@ -144,8 +144,6 @@ int admt4000_init(struct admt4000_dev **device,
 
 	dev->is_one_shot = bool_temp;
 
-	dev->is_throw_early_samples = true;
-
 	ret = admt4000_get_page(dev, &bool_temp);
 	if (ret)
 		return ret;
@@ -2285,6 +2283,11 @@ int admt4000_sdp_pulse_coil_rs(struct admt4000_dev *device)
 		return ret;
 	if (direction != NO_OS_GPIO_OUT)
 		return ret; // TODO: Should return relevant info
+
+	ret = admt4000_set_cnv(device, false);
+	if (ret)
+		return ret;
+
 	ret = no_os_gpio_set_value(device->gpio_coil_rs, NO_OS_GPIO_HIGH);
 	if (ret)
 		return ret;
