@@ -292,9 +292,6 @@ struct admt4000_dev {
 	/* Tracker for conversion type: one shot or continuous */
 	bool is_one_shot;
 
-	/* Throws early samples of a channel*/
-	bool is_throw_early_samples;
-
 	/* Conversion factor for fixed voltage measurements (uV) */
 	uint32_t fixed_conv_factor_mv;
 
