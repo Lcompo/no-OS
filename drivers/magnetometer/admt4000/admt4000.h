@@ -276,6 +276,8 @@ struct admt4000_dev {
 	struct no_os_gpio_desc *gpio_coil_rs;
 	struct no_os_gpio_desc *gpio_gpio0_busy;
 	struct no_os_gpio_desc *gpio_shdn_n;
+	struct no_os_gpio_desc *gpio_cnv;
+	struct no_os_gpio_desc *gpio_acalc;
 
 	/* Boolean indicator if setup in page 0 or not */
 	bool is_page_zero;
@@ -304,6 +306,8 @@ struct admt4000_init_param {
 	struct no_os_gpio_init_param gpio_coil_rs;
 	struct no_os_gpio_init_param gpio_gpio0_busy;
 	struct no_os_gpio_init_param gpio_shdn_n;
+	struct no_os_gpio_init_param gpio_cnv;
+	struct no_os_gpio_init_param gpio_acalc;
 
 	/* Specifier for ADMT4000 variant based on VDD */
 	enum admt4000_vdd dev_vdd;
