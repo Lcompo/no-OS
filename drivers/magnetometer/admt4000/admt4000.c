@@ -2321,3 +2321,49 @@ int admt4000_sdp_getval_gpio0_busy(struct admt4000_dev *device, uint8_t *val)
 
 	return ret;
 }
+
+/***************************************************************************//**
+ * @brief Get value of ADMT4000 CNV.
+ *
+ * @param device - The device structure.
+ * @param val - Buffer for the value.
+ *
+ * @return 0 in case of success, negative error code otherwise.
+*******************************************************************************/
+int admt4000_sdp_getval_cnv(struct admt4000_dev *device, uint8_t *val)
+{
+	int ret;
+	uint8_t direction;
+
+	ret = no_os_gpio_get_direction(device->gpio_cnv, &direction);
+	if (ret)
+		return ret;
+	if (direction != NO_OS_GPIO_IN)
+		return EIO;
+	ret = no_os_gpio_get_value(device->gpio_cnv, val);
+
+	return ret;
+}
+
+/***************************************************************************//**
+ * @brief Get value of ADMT4000 ACALC.
+ *
+ * @param device - The device structure.
+ * @param val - Buffer for the value.
+ *
+ * @return 0 in case of success, negative error code otherwise.
+*******************************************************************************/
+int admt4000_sdp_getval_acalc(struct admt4000_dev *device, uint8_t *val)
+{
+	int ret;
+	uint8_t direction;
+
+	ret = no_os_gpio_get_direction(device->gpio_acalc, &direction);
+	if (ret)
+		return ret;
+	if (direction != NO_OS_GPIO_IN)
+		return EIO;
+	ret = no_os_gpio_get_value(device->gpio_acalc, val);
+
+	return ret;
+}
