@@ -111,6 +111,16 @@ int admt4000_init(struct admt4000_dev **device,
 	if (ret)
 		goto err;
 
+	ret = no_os_gpio_get(&dev->gpio_cnv,
+			     &init_param.gpio_cnv);
+	if (ret)
+		goto err;
+
+	ret = no_os_gpio_get(&dev->gpio_acalc,
+			     &init_param.gpio_acalc);
+	if (ret)
+		goto err;
+
 	/** Set Direction **/
 	ret = no_os_gpio_direction_output(dev->gpio_coil_rs,
 					  NO_OS_GPIO_LOW);
@@ -123,6 +133,14 @@ int admt4000_init(struct admt4000_dev **device,
 
 	ret = no_os_gpio_direction_output(dev->gpio_shdn_n,
 					  NO_OS_GPIO_HIGH);
+	if (ret)
+		goto err;
+
+	ret = no_os_gpio_direction_input(dev->gpio_cnv);
+	if (ret)
+		goto err;
+
+	ret = no_os_gpio_direction_input(dev->gpio_acalc);
 	if (ret)
 		goto err;
 

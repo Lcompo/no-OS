@@ -108,6 +108,22 @@ static int admt4000_iio_show_sdp_pulse_coil_rs(void *dev, char *buf,
 		uint32_t len,
 		const struct iio_ch_info *channel, intptr_t priv);
 
+static int admt4000_iio_store_sdp_cnv(void *dev, char *buf,
+				      uint32_t len,
+				      const struct iio_ch_info *channel, intptr_t priv);
+
+static int admt4000_iio_show_sdp_cnv(void *dev, char *buf,
+				     uint32_t len,
+				     const struct iio_ch_info *channel, intptr_t priv);
+
+static int admt4000_iio_store_sdp_acalc(void *dev, char *buf,
+					uint32_t len,
+					const struct iio_ch_info *channel, intptr_t priv);
+
+static int admt4000_iio_show_sdp_acalc(void *dev, char *buf,
+				       uint32_t len,
+				       const struct iio_ch_info *channel, intptr_t priv);
+
 static struct iio_attribute admt4000_iio_attrs[] = {
 	{
 		.name = "page",
@@ -148,6 +164,16 @@ static struct iio_attribute admt4000_iio_attrs[] = {
 		.name = "sdp_coil_rs",
 		.store = admt4000_iio_store_sdp_pulse_coil_rs,
 		.show = admt4000_iio_show_sdp_pulse_coil_rs,
+	},
+	{
+		.name = "sdp_cnv",
+		.store = admt4000_iio_store_sdp_cnv,
+		.show = admt4000_iio_show_sdp_cnv,
+	},
+	{
+		.name = "sdp_acalc",
+		.store = admt4000_iio_store_sdp_acalc,
+		.show = admt4000_iio_show_sdp_acalc,
 	},
 
 	END_ATTRIBUTES_ARRAY
@@ -668,7 +694,7 @@ static int admt4000_iio_show_h8_ctrl_en(void *dev, char *buf, uint32_t len,
 }
 
 /**
- * @brief Handles the write request for gpio0_busy.
+ * @brief Handles the write request for GPIO0_BUSY.
  *
  * @param device - Physical instance of a iio_axi_dac device.
  * @param buf - Value to be written to attribute.
@@ -691,7 +717,7 @@ static int admt4000_iio_store_sdp_gpio0_busy(void *dev, char *buf, uint32_t len,
 }
 
 /**
- * @brief Handles the read request for for gpio0_busy.
+ * @brief Handles the read request for for GPIO0_BUSY.
  *
  * @param dev     - The iio device structure.
  * @param buf	  - Command buffer to be filled with requested data.
@@ -707,7 +733,7 @@ static int admt4000_iio_show_sdp_gpio0_busy(void *dev, char *buf, uint32_t len,
 	struct admt4000_iio_dev *iio_admt4000;
 	struct admt4000_dev *admt4000;
 	int ret;
-	uint8_t vals;
+	int32_t vals = 0;
 
 	iio_admt4000 = (struct admt4000_iio_dev *)dev;
 	admt4000 = iio_admt4000->admt4000_desc;
@@ -716,7 +742,7 @@ static int admt4000_iio_show_sdp_gpio0_busy(void *dev, char *buf, uint32_t len,
 	if (ret)
 		return ret;
 
-	return iio_format_value(buf, len, IIO_VAL_INT, 1, vals);
+	return iio_format_value(buf, len, IIO_VAL_INT, 1, &vals);
 }
 
 /**
@@ -815,6 +841,111 @@ static int admt4000_iio_show_sdp_pulse_coil_rs(void *dev, char *buf,
 
 	return 0;
 }
+
+/**
+ * @brief Handles the write request for CNV.
+ *
+ * @param device - Physical instance of a iio_axi_dac device.
+ * @param buf - Value to be written to attribute.
+ * @param len - Length of the data in "buf".
+ * @param channel - Channel properties.
+ * @param priv    - Command attribute id.
+ *
+ * @return Number of bytes written to device, or negative value on failure.
+ */
+static int admt4000_iio_store_sdp_cnv(void *dev, char *buf, uint32_t len,
+				      const struct iio_ch_info *channel, intptr_t priv)
+{
+	struct admt4000_iio_dev *iio_admt4000;
+	struct admt4000_dev *admt4000;
+
+	iio_admt4000 = (struct admt4000_iio_dev *)dev;
+	admt4000 = iio_admt4000->admt4000_desc;
+
+	return 0;
+}
+
+/**
+ * @brief Handles the read request for for CNV.
+ *
+ * @param dev     - The iio device structure.
+ * @param buf	  - Command buffer to be filled with requested data.
+ * @param len     - Length of the received command buffer in bytes.
+ * @param channel - Command channel info.
+ * @param priv    - Command attribute id.
+ *
+ * @return ret    - 0 in case of success, errno errors otherwise
+*/
+static int admt4000_iio_show_sdp_cnv(void *dev, char *buf, uint32_t len,
+				     const struct iio_ch_info *channel, intptr_t priv)
+{
+	struct admt4000_iio_dev *iio_admt4000;
+	struct admt4000_dev *admt4000;
+	int ret;
+	int32_t vals = 0;
+
+	iio_admt4000 = (struct admt4000_iio_dev *)dev;
+	admt4000 = iio_admt4000->admt4000_desc;
+
+	ret = admt4000_sdp_getval_cnv(admt4000, &vals);
+	if (ret)
+		return ret;
+
+	return iio_format_value(buf, len, IIO_VAL_INT, 1, &vals);
+}
+
+/**
+ * @brief Handles the write request for ACALC.
+ *
+ * @param device - Physical instance of a iio_axi_dac device.
+ * @param buf - Value to be written to attribute.
+ * @param len - Length of the data in "buf".
+ * @param channel - Channel properties.
+ * @param priv    - Command attribute id.
+ *
+ * @return Number of bytes written to device, or negative value on failure.
+ */
+static int admt4000_iio_store_sdp_acalc(void *dev, char *buf, uint32_t len,
+					const struct iio_ch_info *channel, intptr_t priv)
+{
+	struct admt4000_iio_dev *iio_admt4000;
+	struct admt4000_dev *admt4000;
+
+	iio_admt4000 = (struct admt4000_iio_dev *)dev;
+	admt4000 = iio_admt4000->admt4000_desc;
+
+	return 0;
+}
+
+/**
+ * @brief Handles the read request for for ACALC.
+ *
+ * @param dev     - The iio device structure.
+ * @param buf	  - Command buffer to be filled with requested data.
+ * @param len     - Length of the received command buffer in bytes.
+ * @param channel - Command channel info.
+ * @param priv    - Command attribute id.
+ *
+ * @return ret    - 0 in case of success, errno errors otherwise
+*/
+static int admt4000_iio_show_sdp_acalc(void *dev, char *buf, uint32_t len,
+				       const struct iio_ch_info *channel, intptr_t priv)
+{
+	struct admt4000_iio_dev *iio_admt4000;
+	struct admt4000_dev *admt4000;
+	int ret;
+	int32_t vals = 0;
+
+	iio_admt4000 = (struct admt4000_iio_dev *)dev;
+	admt4000 = iio_admt4000->admt4000_desc;
+
+	ret = admt4000_sdp_getval_acalc(admt4000, &vals);
+	if (ret)
+		return ret;
+
+	return iio_format_value(buf, len, IIO_VAL_INT, 1, &vals);
+}
+
 
 /***************************************************************************//**
  * @brief Handles the read request for scale attribute.
