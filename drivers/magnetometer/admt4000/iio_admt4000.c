@@ -1098,9 +1098,12 @@ static int admt4000_iio_read_samples(void *dev, int16_t *buff,
 			ret = admt4000_set_cnv(admt4000, false);
 			if (ret)
 				return ret;
+			ret = admt4000_set_cnv(admt4000, true);
+			if (ret)
+				return ret;
 		}
 
-		no_os_udelay(800); // previous working delay 250uS
+		//no_os_udelay(800); // previous working delay 250uS
 
 		ret = admt4000_get_raw_turns_and_angle(admt4000, &turns, angle);
 		if (ret)
