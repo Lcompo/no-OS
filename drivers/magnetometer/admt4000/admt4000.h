@@ -107,8 +107,10 @@ extern "C" {
 
 /* Register 03 */
 #define ADMT4000_TURN_CNT_MASK          NO_OS_GENMASK(15, 10)
+//#define ADMT4000_TURN_CNT_MASK          NO_OS_GENMASK(15, 8)
 #define ADMT4000_ABS_ANGLE_MASK         NO_OS_GENMASK(9, 0)
-#define ADMT4000_INVALID_TURN           0x36
+//#define ADMT4000_INVALID_TURN           0x36
+#define ADMT4000_INVALID_TURN           0x53
 
 /* Register 04*/
 #define ADMT4000_MAX_GPIO_INDEX         5
