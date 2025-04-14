@@ -330,11 +330,18 @@ int admt4000_iio_remove(struct admt4000_iio_dev *desc)
 static int admt4000_iio_reg_read(struct admt4000_iio_dev *dev, uint32_t reg,
 				 uint32_t *readval)
 {
+	int ret;
+
 	if (reg > __UINT8_MAX__)
 		return -EINVAL;
 
-	return admt4000_read(dev->admt4000_desc, (uint8_t)reg,
-			     (uint16_t *) readval, NULL);
+	uint16_t temp;
+
+	ret = admt4000_read(dev->admt4000_desc, (uint8_t)reg,
+			    &temp, NULL);
+	*readval = temp;
+
+	return ret;
 }
 
 /**
@@ -1093,7 +1100,7 @@ static int admt4000_iio_read_samples(void *dev, int16_t *buff,
 			if (ret)
 				return ret;
 		}
-		
+
 		ret = admt4000_set_cnv(admt4000, false);
 		if (ret)
 			return ret;
