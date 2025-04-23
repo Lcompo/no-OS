@@ -1090,6 +1090,12 @@ static int admt4000_iio_read_samples(void *dev, int16_t *buff,
 	ret = admt4000_get_cnv_mode(admt4000, &is_one_shot);
 	if (ret)
 		return ret;
+	
+	// is_one_shot = false;
+
+	// ret = admt4000_set_cnv_mode(admt4000, is_one_shot);
+	// if (ret)
+	// 	return ret;
 
 	/* Set CNV High at every start of the routine*/
 	ret = admt4000_set_cnv(admt4000, true);
@@ -1097,20 +1103,12 @@ static int admt4000_iio_read_samples(void *dev, int16_t *buff,
 		return ret;
 
 	for (i = 0; i < samples * iio_admt4000->no_of_active_channels;) {
-		ret = admt4000_set_cnv(admt4000, true);
-		if (ret)
-			return ret;
 		
 		ret = admt4000_set_cnv(admt4000, false);
 		if (ret)
 			return ret;
 
-		no_os_udelay(300); // previous working delay 250uS
-
-		/* Set CNV High at every start of the routine*/
-		ret = admt4000_set_cnv(admt4000, true);
-		if (ret)
-			return ret;
+		no_os_udelay(1400); // previous working delay 250uS
 
 		ret = admt4000_get_raw_turns_and_angle(admt4000, &turns, angle);
 		if (ret)
@@ -1135,9 +1133,14 @@ static int admt4000_iio_read_samples(void *dev, int16_t *buff,
 		}
 		if (ret)
 			break;
+		
+		ret = admt4000_set_cnv(admt4000, true);
+		if (ret)
+			return ret;
+		
 	}
 
-	// ret = admt4000_clear_all_faults(admt4000);
+	// ret = admt4000_set_cnv(admt4000, true);
 	// if (ret)
 	// 	return ret;
 
