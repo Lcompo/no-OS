@@ -1090,23 +1090,19 @@ static int admt4000_iio_read_samples(void *dev, int16_t *buff,
 	ret = admt4000_get_cnv_mode(admt4000, &is_one_shot);
 	if (ret)
 		return ret;
-	
-	// is_one_shot = false;
-
-	// ret = admt4000_set_cnv_mode(admt4000, is_one_shot);
-	// if (ret)
-	// 	return ret;
-
-	/* Set CNV High at every start of the routine*/
-	ret = admt4000_set_cnv(admt4000, true);
-	if (ret)
-		return ret;
 
 	for (i = 0; i < samples * iio_admt4000->no_of_active_channels;) {
 		
-		ret = admt4000_set_cnv(admt4000, false);
-		if (ret)
-			return ret;
+		/* Set CNV High at every start of the routine*/
+		if (is_one_shot) {
+			ret = admt4000_set_cnv(admt4000, true);
+			if (ret)
+				return ret;
+		}else {
+			ret = admt4000_set_cnv(admt4000, false);
+			if (ret)
+				return ret;
+		}
 
 		no_os_udelay(1400); // previous working delay 250uS
 
@@ -1133,10 +1129,17 @@ static int admt4000_iio_read_samples(void *dev, int16_t *buff,
 		}
 		if (ret)
 			break;
-		
-		ret = admt4000_set_cnv(admt4000, true);
-		if (ret)
-			return ret;
+
+		/* Set CNV High at every start of the routine*/
+		if (is_one_shot) {
+			ret = admt4000_set_cnv(admt4000, true);
+			if (ret)
+				return ret;
+		}else {
+			ret = admt4000_set_cnv(admt4000, false);
+			if (ret)
+				return ret;
+		}
 		
 	}
 
