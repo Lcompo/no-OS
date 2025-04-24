@@ -1122,6 +1122,8 @@ static int admt4000_iio_read_samples(void *dev, int16_t *buff,
 			i++;
 		}
 		if (iio_admt4000->active_channels & NO_OS_BIT(2)) {
+			if (turns > ADMT4000_TURN_CNT_THRES)
+				turns = (int16_t)(turns) - ADMT4000_TURN_CNT_TWOS;
 
 			buff[i] = (int16_t) turns;
 			i++;
