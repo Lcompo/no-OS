@@ -1098,6 +1098,9 @@ static int admt4000_iio_read_samples(void *dev, int16_t *buff,
 			ret = admt4000_set_cnv(admt4000, true);
 			if (ret)
 				return ret;
+			ret = admt4000_set_cnv(admt4000, false);
+			if (ret)
+				return ret;
 		}else {
 			ret = admt4000_set_cnv(admt4000, false);
 			if (ret)
