@@ -217,11 +217,11 @@ static struct scan_type admt4000_iio_turns_scan_type = {
 	.is_big_endian = false
 };
 
-static struct scan_type admt4000_iio_u14r2s_scan_type = {
+static struct scan_type admt4000_iio_u14r0s_scan_type = {
 	.sign = 'u',
 	.realbits = 14,
 	.storagebits = 16,
-	.shift = 2,
+	.shift = 0,
 	.is_big_endian = false
 };
 
@@ -268,7 +268,7 @@ static struct iio_channel admt4000_channels[] = {
 		.address = 4,
 		.scan_index = 4,
 		.attributes = admt4000_scan_attrs,
-		.scan_type = &admt4000_iio_u14r2s_scan_type,
+		.scan_type = &admt4000_iio_u14r0s_scan_type,
 		.ch_out = false
 	},
 };

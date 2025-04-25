@@ -806,28 +806,22 @@ int admt4000_get_raw_turns_and_angle(struct admt4000_dev *device,
 *******************************************************************************/
 int admt4000_get_cos(struct admt4000_dev *device, uint16_t *val)
 {
+	//buf[0] = ADMT4000_RAW_COSINE_MASK  & ADMT4000_RW_MASK;
 	int ret;
-	uint8_t excess, temp;
-	uint8_t buf[4] = { 0 };
+	uint16_t raw_temp;
+	uint8_t verif;
 
-	buf[0] = ADMT4000_RAW_COSINE_MASK  & ADMT4000_RW_MASK;
+	if (!device->is_page_zero) {
+		ret = admt4000_set_page(device, true);
+		if (ret)
+			return ret;
+	}
 
-	ret = no_os_spi_write_and_read(device->spi_desc, buf, 4);
-	if (ret)
-		return ret;
-	
-	temp = no_os_field_get(ADMT4000_LIFE_CTR | ADMT4000_FAULT_MASK, buf[3]);
-
-	*val = no_os_get_unaligned_be16(buf + 1);
-
-	ret = admt4000_compute_crc(ADMT4000_RAW_COSINE_MASK, *val, temp, false,
-		&excess);
-
+	ret = admt4000_read(device, ADMT4000_00_REG_COSINE, &raw_temp, &verif);
 	if (ret)
 		return ret;
 
-	if (no_os_field_get(ADMT4000_RCV_CRC, buf[3]) != excess)
-		return -EBADMSG;
+	*val = no_os_field_get(ADMT4000_RAW_COSINE_MASK, raw_temp);
 
 	return 0;
 }
