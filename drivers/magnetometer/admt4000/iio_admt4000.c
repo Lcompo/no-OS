@@ -1072,11 +1072,7 @@ static int admt4000_iio_read_offset(void *dev, char *buf, uint32_t len,
 		return iio_format_value(buf, len, IIO_VAL_INT, 1, vals);
 	case IIO_TEMP:
 		vals[0] = 1150;
-
-		return iio_format_value(buf, len, IIO_VAL_INT, 1, vals);
-
-	default:
-		return -EINVAL;
+ 
 	}
 }
 
@@ -1096,7 +1092,6 @@ static int admt4000_iio_read_samples(void *dev, int16_t *buff,
 	struct admt4000_dev *admt4000;
 	bool is_one_shot, cnv;
 	uint16_t angle[2];
-	//int i, turns, ret;
 	int i, ret;
 	uint8_t turns;
 
@@ -1161,7 +1156,7 @@ static int admt4000_iio_read_samples(void *dev, int16_t *buff,
 			break;
 
 		if (iio_admt4000->active_channels & NO_OS_BIT(4)) {
-			ret = admt4000_get_cos(admt4000, buff);
+			ret = admt4000_get_cos(admt4000, &buff[i]);
 			i++;
 		}
 
