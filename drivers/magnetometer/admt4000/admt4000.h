@@ -128,6 +128,7 @@ extern "C" {
 
 /* Register 0x10/11/12/13, page 0 */
 #define ADMT4000_RAW_ANGLE_MASK         NO_OS_GENMASK(15, 2)
+#define ADMT4000_RAW_COSINE_MASK        NO_OS_GENMASK(15, 2)
 
 /* Register 18, page 0 */
 #define ADMT4000_RADIUS_MASK            NO_OS_GENMASK(15, 1)

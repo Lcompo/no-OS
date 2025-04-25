@@ -217,6 +217,14 @@ static struct scan_type admt4000_iio_turns_scan_type = {
 	.is_big_endian = false
 };
 
+static struct scan_type admt4000_iio_u14r2s_scan_type = {
+	.sign = 'u',
+	.realbits = 14,
+	.storagebits = 16,
+	.shift = 2,
+	.is_big_endian = false
+};
+
 static struct iio_channel admt4000_channels[] = {
 	{
 		.ch_type = IIO_ROT, // absangle
@@ -252,6 +260,15 @@ static struct iio_channel admt4000_channels[] = {
 		.scan_index = 3,
 		.attributes = admt4000_scan_attrs,
 		.scan_type = &admt4000_iio_angle_scan_type,
+		.ch_out = false
+	},
+	{
+		.ch_type = IIO_MAGN,
+		.channel = 4,
+		.address = 4,
+		.scan_index = 4,
+		.attributes = admt4000_scan_attrs,
+		.scan_type = &admt4000_iio_u14r2s_scan_type,
 		.ch_out = false
 	},
 };
@@ -1006,6 +1023,11 @@ static int admt4000_iio_read_scale(void *dev, char *buf, uint32_t len,
 		vals[1] = 1632;
 
 		return iio_format_value(buf, len, IIO_VAL_FRACTIONAL, 2, vals);
+	case IIO_MAGN:
+		vals[0] = 360;
+		vals[1] = 12;
+
+		return iio_format_value(buf, len, IIO_VAL_FRACTIONAL, 2, vals);
 	default:
 		return -EINVAL;
 	}
@@ -1043,6 +1065,7 @@ static int admt4000_iio_read_offset(void *dev, char *buf, uint32_t len,
 	switch (channel->type) {
 	case IIO_ROT: // absangle
 	case IIO_ANGL: // angle
+	case IIO_MAGN:
 	case IIO_COUNT:
 		vals[0] = 0;
 
@@ -1051,6 +1074,7 @@ static int admt4000_iio_read_offset(void *dev, char *buf, uint32_t len,
 		vals[0] = 1150;
 
 		return iio_format_value(buf, len, IIO_VAL_INT, 1, vals);
+
 	default:
 		return -EINVAL;
 	}
@@ -1132,6 +1156,15 @@ static int admt4000_iio_read_samples(void *dev, int16_t *buff,
 			ret = admt4000_get_temp(admt4000, &buff[i], true);
 			i++;
 		}
+		
+		if (ret)
+			break;
+
+		if (iio_admt4000->active_channels & NO_OS_BIT(4)) {
+			ret = admt4000_get_cos(admt4000, buff);
+			i++;
+		}
+
 		if (ret)
 			break;
 
