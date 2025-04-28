@@ -195,7 +195,7 @@ static struct iio_attribute admt4000_scan_attrs[] = {
 
 static struct scan_type admt4000_iio_absangle_scan_type = {
 	.sign = 'u',
-	.realbits = 10,
+	.realbits = 16,
 	.storagebits = 16,
 	.shift = 0,
 	.is_big_endian = false
