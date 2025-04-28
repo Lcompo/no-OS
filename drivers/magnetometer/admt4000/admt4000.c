@@ -779,7 +779,8 @@ int admt4000_get_raw_turns_and_angle(struct admt4000_dev *device,
 {
 	int i, ret;
 	uint16_t admt4000_angle_masks[] = {
-		ADMT4000_ABS_ANGLE_MASK,
+		//ADMT4000_ABS_ANGLE_MASK,
+		NO_OS_GENMASK(15, 0), 
 		ADMT4000_ANGLE_MASK,
 	};
 
