@@ -827,6 +827,37 @@ int admt4000_get_cos(struct admt4000_dev *device, uint16_t *val)
 	return 0;
 }
 
+
+/***************************************************************************//**
+ * @brief Get the number Sine(Raw).
+ *
+ * @param device - The device structure.
+ * @param turns - Stores the number of turns read (Raw).
+ * @param angle - Stores the angle values read (Raw, extracted).
+ *
+ * @return 0 in case of success, negative error code otherwise.
+*******************************************************************************/
+int admt4000_get_sin(struct admt4000_dev *device, uint16_t *val)
+{
+	int ret;
+	uint16_t raw_temp;
+	uint8_t verif;
+
+	if (!device->is_page_zero) {
+		ret = admt4000_set_page(device, true);
+		if (ret)
+			return ret;
+	}
+
+	ret = admt4000_read(device, ADMT4000_00_REG_SINE, &raw_temp, &verif);
+	if (ret)
+		return ret;
+
+	*val = no_os_field_get(ADMT4000_RAW_SINE_MASK, raw_temp);
+
+	return 0;
+}
+
 /***************************************************************************//**
  * @brief Get status of selected GPIO.
  *

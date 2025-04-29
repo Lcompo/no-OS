@@ -131,6 +131,7 @@ extern "C" {
 /* Register 0x10/11/12/13, page 0 */
 #define ADMT4000_RAW_ANGLE_MASK         NO_OS_GENMASK(15, 2)
 #define ADMT4000_RAW_COSINE_MASK        NO_OS_GENMASK(15, 2)
+#define ADMT4000_RAW_SINE_MASK        	NO_OS_GENMASK(15, 2)
 
 /* Register 18, page 0 */
 #define ADMT4000_RADIUS_MASK            NO_OS_GENMASK(15, 1)
@@ -919,6 +920,34 @@ int admt4000_sdp_getval_cnv(struct admt4000_dev *device, uint8_t *val);
  * @return 0 in case of success, negative error code otherwise.
  */
 int admt4000_sdp_getval_acalc(struct admt4000_dev *device, uint8_t *val);
+
+
+/**
+ * @brief Get the cosine value from the ADMT4000 device.
+ *
+ * This function retrieves the cosine value from the ADMT4000 magnetometer
+ * device and stores it in the provided memory location.
+ *
+ * @param device Pointer to the ADMT4000 device structure.
+ * @param val Pointer to a variable where the retrieved cosine value will be stored.
+ *
+ * @return 0 in case of success, or a negative error code in case of failure.
+ */
+int admt4000_get_cos(struct admt4000_dev *device, uint16_t *val);
+
+/**
+ * @brief Retrieve the sine value from the ADMT4000 device.
+ *
+ * This function reads the sine value from the ADMT4000 magnetometer device
+ * and stores it in the provided memory location.
+ *
+ * @param device Pointer to the ADMT4000 device structure.
+ * @param val Pointer to a variable where the sine value will be stored.
+ *            The value is returned as a 16-bit unsigned integer.
+ *
+ * @return 0 in case of success, or a negative error code in case of failure.
+ */
+int admt4000_get_sin(struct admt4000_dev *device, uint16_t *val);
 
 #endif  /* __ADMT4000_H__ */
 

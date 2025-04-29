@@ -271,6 +271,15 @@ static struct iio_channel admt4000_channels[] = {
 		.scan_type = &admt4000_iio_u14r0s_scan_type,
 		.ch_out = false
 	},
+	{
+		.ch_type = IIO_MAGN,
+		.channel = 5,
+		.address = 5,
+		.scan_index = 5,
+		.attributes = admt4000_scan_attrs,
+		.scan_type = &admt4000_iio_u14r0s_scan_type,
+		.ch_out = false
+	},
 };
 
 static struct iio_device admt4000_iio_dev = {
@@ -1163,6 +1172,14 @@ static int admt4000_iio_read_samples(void *dev, int16_t *buff,
 		if (ret)
 			break;
 
+		if (iio_admt4000->active_channels & NO_OS_BIT(5)) {
+			ret = admt4000_get_sin(admt4000, &buff[i]);
+			i++;
+		}
+
+		if (ret)
+			break;
+
 		/* Set CNV High at every start of the routine*/
 		if (is_one_shot) {
 			ret = admt4000_set_cnv(admt4000, true);
@@ -1175,10 +1192,6 @@ static int admt4000_iio_read_samples(void *dev, int16_t *buff,
 		}
 		
 	}
-
-	// ret = admt4000_set_cnv(admt4000, true);
-	// if (ret)
-	// 	return ret;
 
 	return samples;
 }
