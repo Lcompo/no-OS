@@ -949,6 +949,7 @@ int admt4000_get_cos(struct admt4000_dev *device, uint16_t *val);
  */
 int admt4000_get_sin(struct admt4000_dev *device, uint16_t *val);
 
+
 #endif  /* __ADMT4000_H__ */
 
 #ifdef __cplusplus
