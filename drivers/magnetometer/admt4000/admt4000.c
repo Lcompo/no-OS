@@ -192,9 +192,47 @@ int admt4000_remove(struct admt4000_dev *device)
 	if (!device)
 		return -EINVAL;
 
-	ret = no_os_spi_remove(device->spi_desc);
-	if (ret)
-		return ret;
+	if (device->spi_desc) {
+		ret = no_os_spi_remove(device->spi_desc);
+		if (ret)
+			return ret;
+		device->spi_desc = NULL;
+	}
+	
+	if (device->gpio_coil_rs) {
+		ret = no_os_gpio_remove(device->gpio_coil_rs);
+		if (ret)
+			return ret;
+		device->gpio_coil_rs = NULL;
+	}
+
+	if (device->gpio_gpio0_busy) {
+		ret = no_os_gpio_remove(device->gpio_gpio0_busy);
+		if (ret)
+			return ret;
+		device->gpio_gpio0_busy = NULL;
+	}
+
+	if (device->gpio_shdn_n) {
+		ret = no_os_gpio_remove(device->gpio_shdn_n);
+		if (ret)
+			return ret;
+		device->gpio_shdn_n = NULL;
+	}
+
+	if (device->gpio_cnv) {
+		ret = no_os_gpio_remove(device->gpio_cnv);
+		if (ret)
+			return ret;
+		device->gpio_cnv = NULL;
+	}
+
+	if (device->gpio_acalc) {
+		ret = no_os_gpio_remove(device->gpio_acalc);
+		if (ret)
+			return ret;
+		device->gpio_acalc = NULL;
+	}
 
 	no_os_free(device);
 
@@ -2363,7 +2401,7 @@ int admt4000_sdp_pulse_coil_rs(struct admt4000_dev *device)
 	if (ret)
 		return ret;
 	if (direction != NO_OS_GPIO_OUT)
-		return ret; // TODO: Should return relevant info
+		return -EIO; 
 
 	ret = admt4000_set_cnv(device, false);
 	if (ret)
@@ -2373,6 +2411,7 @@ int admt4000_sdp_pulse_coil_rs(struct admt4000_dev *device)
 	if (ret)
 		return ret;
 
+	// Pulse duration is 5ms and functional.
 	no_os_mdelay(5);
 
 	ret = no_os_gpio_set_value(device->gpio_coil_rs, NO_OS_GPIO_LOW);
