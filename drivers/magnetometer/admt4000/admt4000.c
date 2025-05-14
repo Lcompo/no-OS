@@ -60,7 +60,7 @@ static uint8_t admt4000_ecc_control_registers[] = {
 	ADMT4000_02_REG_H8PH,
 };
 
-static float admt4000_angle_conv_factors[] = {
+static uint32_t admt4000_angle_conv_factors[] = {
 	ADMT4000_ABS_ANGLE_RES,
 	ADMT4000_ANGLE_RES,
 };
@@ -138,9 +138,9 @@ int admt4000_init(struct admt4000_dev **device,
 		goto err;
 
 	if (init_param.dev_vdd == ADMT4000_3P3V)
-		dev->fixed_conv_factor_mv = 412.5;
+		dev->fixed_conv_factor_mv = 412.5 * ADMT4000_SF;
 	else
-		dev->fixed_conv_factor_mv = 300;
+		dev->fixed_conv_factor_mv = 300 * ADMT4000_SF;
 
 	ret = admt4000_get_cnv_mode(dev, &bool_temp);
 	if (ret)
@@ -906,7 +906,7 @@ int admt4000_get_secondary_angle(struct admt4000_dev *device, uint16_t *angle)
  *
  * @return 0 in case of success, negative error code otherwise.
 *******************************************************************************/
-int admt4000_get_converted_secondary_angle(struct admt4000_dev *device, float *angle)
+int admt4000_get_converted_secondary_angle(struct admt4000_dev *device, uint32_t *angle)
 {
 	int ret;
 	uint16_t raw_temp;
@@ -915,7 +915,7 @@ int admt4000_get_converted_secondary_angle(struct admt4000_dev *device, float *a
 	if (ret)
 		return ret;
 
-	*angle = (float)raw_temp * admt4000_angle_conv_factors[1];
+	*angle = raw_temp * admt4000_angle_conv_factors[1];
 
 	return 0;
 }
@@ -997,7 +997,7 @@ int admt4000_get_radius(struct admt4000_dev *device, uint16_t *radius)
  *
  * @return 0 in case of success, negative error code otherwise.
 *******************************************************************************/
-int admt4000_get_converted_radius(struct admt4000_dev *device, float *radius)
+int admt4000_get_converted_radius(struct admt4000_dev *device, uint32_t *radius)
 {
 	int ret;
 	uint16_t raw_temp;
@@ -1006,7 +1006,7 @@ int admt4000_get_converted_radius(struct admt4000_dev *device, float *radius)
 	if (ret)
 		return ret;
 
-	*radius = (float)raw_temp * ADMT4000_RADIUS_RES;
+	*radius = raw_temp * ADMT4000_RADIUS_RES;
 
 	return 0;
 }
@@ -1082,10 +1082,10 @@ int admt4000_get_fixed_voltage(struct admt4000_dev *device, uint8_t *fixed_volt)
  *
  * @return 0 in case of success, negative error code otherwise.
 *******************************************************************************/
-int admt4000_get_converted_fixed_voltage(struct admt4000_dev *device, float *fixed_volt)
+int admt4000_get_converted_fixed_voltage(struct admt4000_dev *device, uint32_t *fixed_volt)
 {
 	int ret;
-	float res;
+	uint32_t res;
 	uint8_t raw_temp;
 
 	ret = admt4000_get_fixed_voltage(device, &raw_temp);
@@ -1098,9 +1098,9 @@ int admt4000_get_converted_fixed_voltage(struct admt4000_dev *device, float *fix
 		res = ADMT4000_FIXED_VOLT_5V_RES;
 
 	if (raw_temp > ADMT4000_8BIT_THRES) {
-		*fixed_volt = ((float)raw_temp - ADMT4000_8BIT_TWOS) * res;
+		*fixed_volt = (raw_temp - ADMT4000_8BIT_TWOS) * res;
 	} else
-		*fixed_volt = (float)raw_temp * res;
+		*fixed_volt = raw_temp * res;
 
 	return 0;
 }
@@ -1157,7 +1157,7 @@ int admt4000_get_diag_res(struct admt4000_dev *device, uint16_t *diag_meas,
  *
  * @return 0 in case of success, negative error code otherwise.
 *******************************************************************************/
-int admt4000_get_converted_diag_res(struct admt4000_dev *device, float *diag_meas,
+int admt4000_get_converted_diag_res(struct admt4000_dev *device, uint32_t *diag_meas,
 				    uint8_t is_pos)
 {
 	int ret;
@@ -1172,9 +1172,9 @@ int admt4000_get_converted_diag_res(struct admt4000_dev *device, float *diag_mea
 		return ret;
 
 	if (raw_temp > ADMT4000_8BIT_THRES)
-		*diag_meas = ((float)raw_temp - ADMT4000_8BIT_TWOS) * ADMT4000_DIAG_RESISTOR_RES;
+		*diag_meas = (raw_temp - ADMT4000_8BIT_TWOS) * ADMT4000_DIAG_RESISTOR_RES;
 	else
-		*diag_meas = (float)raw_temp * ADMT4000_DIAG_RESISTOR_RES;
+		*diag_meas = raw_temp * ADMT4000_DIAG_RESISTOR_RES;
 
 	return 0;
 }
@@ -1222,7 +1222,7 @@ int admt4000_get_temp(struct admt4000_dev *device, uint16_t *temp,
  *
  * @return 0 in case of success, negative error code otherwise.
 *******************************************************************************/
-int admt4000_get_converted_temp(struct admt4000_dev *device, float *temp,
+int admt4000_get_converted_temp(struct admt4000_dev *device, uint32_t *temp,
 				bool is_primary)
 {
 	int ret;
@@ -1233,13 +1233,13 @@ int admt4000_get_converted_temp(struct admt4000_dev *device, float *temp,
 		return ret;
 
 	if (device->dev_vdd == ADMT4000_3P3V && !is_primary)
-		*temp = ((float)raw_temp - 1208.0) / 13.61;
+		*temp = ((raw_temp - 1208.0) / 13.61) * ADMT4000_SF;
 	else if (device->dev_vdd == ADMT4000_3P3V && is_primary)
-		*temp = ((float)raw_temp - 1150.0) / 16.32;
+		*temp = ((raw_temp - 1150.0) / 16.32) * ADMT4000_SF;
 	else if (device->dev_vdd == ADMT4000_5V && !is_primary)
-		*temp = ((float)raw_temp - 1238.0) / 13.45;
+		*temp = ((raw_temp - 1238.0) / 13.45) * ADMT4000_SF;
 	else if (device->dev_vdd == ADMT4000_5V && is_primary)
-		*temp = ((float)raw_temp - 1145.0) / 16.27;
+		*temp = ((raw_temp - 1145.0) / 16.27) * ADMT4000_SF;
 	else
 		return -EINVAL;
 
@@ -1757,7 +1757,7 @@ int admt4000_get_angle_thres(struct admt4000_dev *device, uint16_t *thres)
  *
  * @return 0 in case of success, negative error code otherwise.
 *******************************************************************************/
-int admt4000_get_converted_angle_thres(struct admt4000_dev *device, float *thres)
+int admt4000_get_converted_angle_thres(struct admt4000_dev *device, uint32_t *thres)
 {
 	int ret;
 	uint16_t temp;
@@ -1766,7 +1766,7 @@ int admt4000_get_converted_angle_thres(struct admt4000_dev *device, float *thres
 	if (ret)
 		return ret;
 
-	*thres = (float)temp * admt4000_angle_conv_factors[1] / 2.0;
+	*thres = temp * admt4000_angle_conv_factors[1] / 2;
 
 	return 0;
 }
@@ -1820,14 +1820,14 @@ int admt4000_set_angle_thres(struct admt4000_dev *device, uint16_t thres)
  *
  * @return 0 in case of success, negative error code otherwise.
 *******************************************************************************/
-int admt4000_set_converted_angle_thres(struct admt4000_dev *device, float thres)
+int admt4000_set_converted_angle_thres(struct admt4000_dev *device, uint32_t thres)
 {
 	uint16_t raw_temp;
 
 	if (thres < 0.0 || thres > 180.0)
 		return -EINVAL;
 
-	raw_temp = thres / (admt4000_angle_conv_factors[1] / 2.0);
+	raw_temp = thres / (admt4000_angle_conv_factors[1] / 2);
 
 	return admt4000_set_angle_thres(device, raw_temp);
 }
@@ -1941,7 +1941,7 @@ int admt4000_get_hmag_config(struct admt4000_dev *device, uint8_t hmag, uint16_t
  *
  * @return 0 in case of success, negative error code otherwise.
 *******************************************************************************/
-int admt4000_get_converted_hmag_config(struct admt4000_dev *device, uint8_t hmag, float *mag)
+int admt4000_get_converted_hmag_config(struct admt4000_dev *device, uint8_t hmag, uint32_t *mag)
 {
 	int ret;
 	uint16_t temp;
@@ -1950,7 +1950,7 @@ int admt4000_get_converted_hmag_config(struct admt4000_dev *device, uint8_t hmag
 	if (ret)
 		return ret;
 
-	*mag = (float)temp * ADMT4000_HMAG_RES;
+	*mag = temp * ADMT4000_HMAG_RES;
 
 	return 0;
 }
@@ -2017,7 +2017,7 @@ int admt4000_set_hmag_config(struct admt4000_dev *device, uint8_t hmag, uint16_t
  *
  * @return 0 in case of success, negative error code otherwise.
 *******************************************************************************/
-int admt4000_set_converted_hmag_config(struct admt4000_dev *device, uint8_t hmag, float mag)
+int admt4000_set_converted_hmag_config(struct admt4000_dev *device, uint8_t hmag, uint32_t mag)
 {
 	uint16_t temp;
 
@@ -2084,7 +2084,7 @@ int admt4000_get_hphase_config(struct admt4000_dev *device, uint8_t hpha, uint16
  *
  * @return 0 in case of success, negative error code otherwise.
 *******************************************************************************/
-int admt4000_get_converted_hphase_config(struct admt4000_dev *device, uint8_t hpha, float *pha)
+int admt4000_get_converted_hphase_config(struct admt4000_dev *device, uint8_t hpha, uint32_t *pha)
 {
 	int ret;
 	uint16_t temp;
@@ -2093,7 +2093,7 @@ int admt4000_get_converted_hphase_config(struct admt4000_dev *device, uint8_t hp
 	if (ret)
 		return ret;
 
-	*pha = (float)temp * ADMT4000_HPHA_RES;
+	*pha = temp * ADMT4000_HPHA_RES;
 
 	return 0;
 }
@@ -2155,7 +2155,7 @@ int admt4000_set_hphase_config(struct admt4000_dev *device, uint8_t hpha, uint16
  *
  * @return 0 in case of success, negative error code otherwise.
 *******************************************************************************/
-int admt4000_set_converted_hphase_config(struct admt4000_dev *device, uint8_t hpha, float pha)
+int admt4000_set_converted_hphase_config(struct admt4000_dev *device, uint8_t hpha, uint32_t pha)
 {
 	uint16_t temp;
 
