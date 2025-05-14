@@ -42,92 +42,92 @@
 #include "admt4000.h"
 
 struct mbed_uart_init_param uart_extra_ip = {
-    .uart_tx_pin = UART_TX_PIN,
-    .uart_rx_pin = UART_RX_PIN
+	.uart_tx_pin = UART_TX_PIN,
+	.uart_rx_pin = UART_RX_PIN
 };
 
 struct no_os_uart_init_param uart_ip = {
-    .device_id = UART_DEVICE_ID,
-    .irq_id = UART_IRQ_ID,
-    .asynchronous_rx = true,
-    .baud_rate = UART_BAUDRATE,
-    .size = NO_OS_UART_CS_8,
-    .parity = NO_OS_UART_PAR_NO,
-    .stop = NO_OS_UART_STOP_1_BIT,
-    .extra = UART_EXTRA,
-    .platform_ops = UART_OPS,
+	.device_id = UART_DEVICE_ID,
+	.irq_id = UART_IRQ_ID,
+	.asynchronous_rx = true,
+	.baud_rate = UART_BAUDRATE,
+	.size = NO_OS_UART_CS_8,
+	.parity = NO_OS_UART_PAR_NO,
+	.stop = NO_OS_UART_STOP_1_BIT,
+	.extra = UART_EXTRA,
+	.platform_ops = UART_OPS,
 };
 
 struct mbed_spi_init_param spi_extra_ip = {
-    .spi_miso_pin = SPI_MISO,
-    .spi_mosi_pin = SPI_MOSI,
-    .spi_clk_pin = SPI_SCK,
-    .use_sw_csb = false,
+	.spi_miso_pin = SPI_MISO,
+	.spi_mosi_pin = SPI_MOSI,
+	.spi_clk_pin = SPI_SCK,
+	.use_sw_csb = false,
 };
 
 struct mbed_spi_init_param spi_sel_b_extra_ip = {
-    .spi_miso_pin = SPI_MISO,
-    .spi_mosi_pin = SPI_MOSI,
-    .spi_clk_pin = SPI_SCK,
-    .use_sw_csb = true,
+	.spi_miso_pin = SPI_MISO,
+	.spi_mosi_pin = SPI_MOSI,
+	.spi_clk_pin = SPI_SCK,
+	.use_sw_csb = true,
 };
 
 struct mbed_gpio_init_param gpio_extra_ip = {
-    .pin_mode = 1,
+	.pin_mode = 1,
 };
 
 struct no_os_gpio_init_param spi_sel_b_ip = {
-    .port = GPIO_SPI_SEL_PORT,
-    .number = GPIO_SPI_SEL_PIN,
-    .platform_ops = GPIO_OPS,
-    .extra = GPIO_EXTRA,
+	.port = GPIO_SPI_SEL_PORT,
+	.number = GPIO_SPI_SEL_PIN,
+	.platform_ops = GPIO_OPS,
+	.extra = GPIO_EXTRA,
 };
 
 struct no_os_spi_init_param spi_sel_b_spi_ip = {
-    .device_id = SPI_DEVICE_ID,
-    .max_speed_hz = SPI_BAUDRATE,
-    .chip_select = GPIO_SPI_SEL_PIN,
-    .mode = NO_OS_SPI_MODE_3,
-    .bit_order = NO_OS_SPI_BIT_ORDER_MSB_FIRST,
-    .platform_ops = SPI_OPS,
-    .extra = SPI_SEL_EXTRA,
+	.device_id = SPI_DEVICE_ID,
+	.max_speed_hz = SPI_BAUDRATE,
+	.chip_select = GPIO_SPI_SEL_PIN,
+	.mode = NO_OS_SPI_MODE_3,
+	.bit_order = NO_OS_SPI_BIT_ORDER_MSB_FIRST,
+	.platform_ops = SPI_OPS,
+	.extra = SPI_SEL_EXTRA,
 };
 
 const struct no_os_spi_init_param admt_spi_ip = {
-    .device_id = SPI_DEVICE_ID,
-    .max_speed_hz = SPI_BAUDRATE,
-    .chip_select = SPI_CS,
-    .mode = NO_OS_SPI_MODE_0,
-    .bit_order = NO_OS_SPI_BIT_ORDER_MSB_FIRST,
-    .platform_ops = SPI_OPS,
-    .extra = SPI_EXTRA,
+	.device_id = SPI_DEVICE_ID,
+	.max_speed_hz = SPI_BAUDRATE,
+	.chip_select = SPI_CS,
+	.mode = NO_OS_SPI_MODE_0,
+	.bit_order = NO_OS_SPI_BIT_ORDER_MSB_FIRST,
+	.platform_ops = SPI_OPS,
+	.extra = SPI_EXTRA,
 };
 
 const struct no_os_gpio_init_param gpio_coil_rs_ip = {
-    .port = GPIO_SPI_SEL_PORT,
-    .number = GPIO_COIL_RS,
-    .platform_ops = GPIO_OPS,
-    .extra = GPIO_EXTRA,
+	.port = GPIO_SPI_SEL_PORT,
+	.number = GPIO_COIL_RS,
+	.platform_ops = GPIO_OPS,
+	.extra = GPIO_EXTRA,
 };
 
 const struct no_os_gpio_init_param gpio_gpio0_busy_ip = {
-    .port = GPIO_SPI_SEL_PORT,
-    .number = GPIO_GPIO0_BUSY,
-    .platform_ops = GPIO_OPS,
-    .extra = GPIO_EXTRA,
+	.port = GPIO_SPI_SEL_PORT,
+	.number = GPIO_GPIO0_BUSY,
+	.platform_ops = GPIO_OPS,
+	.extra = GPIO_EXTRA,
 };
 
 const struct no_os_gpio_init_param gpio_shdn_n_ip = {
-    .port = GPIO_SPI_SEL_PORT,
-    .number = GPIO_SHDN_N,
-    .platform_ops = GPIO_OPS,
-    .extra = GPIO_EXTRA,
+	.port = GPIO_SPI_SEL_PORT,
+	.number = GPIO_SHDN_N,
+	.platform_ops = GPIO_OPS,
+	.extra = GPIO_EXTRA,
 };
 
 struct admt4000_init_param admt_ip = {
-    .spi_init = admt_spi_ip,
-    .gpio_coil_rs = gpio_coil_rs_ip,
-    .gpio_gpio0_busy = gpio_gpio0_busy_ip,
-    .gpio_shdn_n = gpio_shdn_n_ip,
-    .dev_vdd = ADMT4000_3P3V,
+	.spi_init = admt_spi_ip,
+	.gpio_coil_rs = gpio_coil_rs_ip,
+	.gpio_gpio0_busy = gpio_gpio0_busy_ip,
+	.gpio_shdn_n = gpio_shdn_n_ip,
+	.dev_vdd = ADMT4000_3P3V,
 };

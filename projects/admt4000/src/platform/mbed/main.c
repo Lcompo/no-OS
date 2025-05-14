@@ -85,11 +85,11 @@
 *******************************************************************************/
 int main()
 {
-    struct admt4000_dev *admt;
-    struct no_os_uart_desc *uart_desc;
-    struct no_os_spi_desc *spi_desc;
-    int ret;
-    uint8_t sw_cfg[1] = {0xff};
+	struct admt4000_dev *admt;
+	struct no_os_uart_desc *uart_desc;
+	struct no_os_spi_desc *spi_desc;
+	int ret;
+	uint8_t sw_cfg[1] = {0xff};
 
 #if (ADMT4000_BASIC + ADMT4000_DIAG + ADMT4000_TEST + ADMT4000_ECC + ADMT4000_IIO > 1)
 #error Please enable only 1 example at a time.
@@ -97,56 +97,56 @@ int main()
 #error Please enable 1 example from the Makefile.
 #endif
 
-    /* Initialize SPI for switch configuration */
-    ret = no_os_spi_init(&spi_desc, &spi_sel_b_spi_ip);
-    if (ret)
-        return ret;
+	/* Initialize SPI for switch configuration */
+	ret = no_os_spi_init(&spi_desc, &spi_sel_b_spi_ip);
+	if (ret)
+		return ret;
 
-    /* Configure ADG714 over SPI using SPI_SEL_B_N pin */
-    ret = no_os_spi_write_and_read(spi_desc, sw_cfg, 1);
-    if (ret)
-        return ret;
+	/* Configure ADG714 over SPI using SPI_SEL_B_N pin */
+	ret = no_os_spi_write_and_read(spi_desc, sw_cfg, 1);
+	if (ret)
+		return ret;
 
 #if (ADMT4000_IIO)
-    ret = iio_example_main();
-    if (ret)
-        goto error;
+	ret = iio_example_main();
+	if (ret)
+		goto error;
 #endif
 
-    no_os_mdelay(100);
+	no_os_mdelay(100);
 
-    /* Initialize UART */
-    ret = no_os_uart_init(&uart_desc, &uart_ip);
-    if (ret)
-        return ret;
+	/* Initialize UART */
+	ret = no_os_uart_init(&uart_desc, &uart_ip);
+	if (ret)
+		return ret;
 
-    no_os_uart_stdio(uart_desc);
+	no_os_uart_stdio(uart_desc);
 
-    pr_info("\n SPI switch configured\n");
+	pr_info("\n SPI switch configured\n");
 
-    /* Initialize ADMT */
-    ret = admt4000_init(&admt, admt_ip);
-    if (ret)
-        return ret;
+	/* Initialize ADMT */
+	ret = admt4000_init(&admt, admt_ip);
+	if (ret)
+		return ret;
 
 #if (ADMT4000_BASIC)
-    ret = basic_meas(admt);
+	ret = basic_meas(admt);
 
 #elif (ADMT4000_DIAG)
-    ret = diag_meas(admt);
+	ret = diag_meas(admt);
 
 #elif (ADMT4000_ECC)
-    ret = ecc_main(admt);
+	ret = ecc_main(admt);
 
 #elif (ADMT4000_TEST)
-    ret = function_test(admt);
+	ret = function_test(admt);
 #endif
 
 error:
 #ifndef ADMT4000_IIO
-    no_os_uart_remove(uart_desc);
+	no_os_uart_remove(uart_desc);
 #endif
-    admt4000_remove(admt);
+	admt4000_remove(admt);
 
-    return ret;
+	return ret;
 }
