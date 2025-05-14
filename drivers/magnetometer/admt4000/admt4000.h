@@ -58,7 +58,7 @@ extern "C" {
 #define ADMT4000_AGP_REG_ANGLESEC       0x08
 
 /*ADMT 0x00 Page Registers*/
-#define ADMT4000_RAW_ANGLE_REG(x)       0x10 + (x)
+#define ADMT4000_RAW_ANGLE_REG(x)       (0x10 + (x))
 #define ADMT4000_00_REG_RADIUS          0x18
 #define ADMT4000_00_REG_DIAG1           0x1D
 #define ADMT4000_00_REG_DIAG2           0x1E
