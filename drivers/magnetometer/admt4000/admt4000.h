@@ -325,7 +325,7 @@ int admt4000_init(struct admt4000_dev **device,
 
 /**
  * @brief Deallocates the resources for the device structure.
- * @param dev - The device structure.
+ * @param device - The device structure.
  * @return 0 in case of success, negative error code otherwise.
  */
 int admt4000_remove(struct admt4000_dev *device);
