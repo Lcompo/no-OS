@@ -44,7 +44,8 @@
 static int admt4000_iio_read_samples(void *dev, int16_t *buff,
 				     uint32_t samples);
 
-static int32_t admt4000_iio_submit_samples(struct iio_device_data *iio_dev_data);
+static int32_t admt4000_iio_submit_samples(struct iio_device_data
+		*iio_dev_data);
 
 static int admt4000_iio_read_scale(void *dev, char *buf, uint32_t len,
 				   const struct iio_ch_info *channel, intptr_t priv);
@@ -1088,7 +1089,7 @@ static int admt4000_iio_read_offset(void *dev, char *buf, uint32_t len,
 		return iio_format_value(buf, len, IIO_VAL_INT, 1, vals);
 	case IIO_TEMP:
 		vals[0] = 1150;
- 
+
 	}
 }
 
@@ -1127,7 +1128,7 @@ static int admt4000_iio_read_samples(void *dev, int16_t *buff,
 		return ret;
 
 	for (i = 0; i < samples * iio_admt4000->no_of_active_channels;) {
-		
+
 		/* Set CNV High at every start of the routine*/
 		if (is_one_shot) {
 			ret = admt4000_set_cnv(admt4000, true);
@@ -1136,24 +1137,24 @@ static int admt4000_iio_read_samples(void *dev, int16_t *buff,
 			ret = admt4000_set_cnv(admt4000, false);
 			if (ret)
 				return ret;
-		}else {
+		} else {
 			ret = admt4000_set_cnv(admt4000, false);
 			if (ret)
 				return ret;
 		}
 		// previous working delay 250uS
-		no_os_udelay(1400); 
+		no_os_udelay(1400);
 
 		/**
 		 * This section of code processes data from the ADMT4000 magnetometer sensor
 		 * and populates the provided buffer (`buff`) with the requested data based
 		 * on the active channels specified in `iio_admt4000->active_channels`.
 		 */
-		
-		 /* Retrieves raw turns and angle data using `admt4000_get_raw_turns_and_angle`.
-		 *    - If channel 0 is active, the first angle component is stored in the buffer.
-		 *    - If channel 1 is active, the second angle component is stored in the buffer.
-		 *    - If channel 2 is active, the turns count is adjusted for threshold and stored. */
+
+		/* Retrieves raw turns and angle data using `admt4000_get_raw_turns_and_angle`.
+		*    - If channel 0 is active, the first angle component is stored in the buffer.
+		*    - If channel 1 is active, the second angle component is stored in the buffer.
+		*    - If channel 2 is active, the turns count is adjusted for threshold and stored. */
 		ret = admt4000_get_raw_turns_and_angle(admt4000, &turns, angle);
 		if (ret)
 			break;
@@ -1180,7 +1181,7 @@ static int admt4000_iio_read_samples(void *dev, int16_t *buff,
 			ret = admt4000_get_temp(admt4000, &buff[i], true);
 			i++;
 		}
-		
+
 		if (ret)
 			break;
 
@@ -1219,91 +1220,16 @@ static int admt4000_iio_read_samples(void *dev, int16_t *buff,
 			ret = admt4000_set_cnv(admt4000, true);
 			if (ret)
 				return ret;
-		}else {
+		} else {
 			ret = admt4000_set_cnv(admt4000, false);
 			if (ret)
 				return ret;
 		}
-		
+
 	}
 
 	return samples;
 }
-
-/**
- * @brief Submit samples for the selected channels
- *
- * @param dev     - The iio device structure.
- * @param buf	  - Command buffer to be filled with requested data.
- * @param samples - Number of samples to be returned
- *
- * @return ret    - 0 in case of success, errno errors otherwise
-*/
-static int32_t admt4000_iio_submit_samples(struct iio_device_data *iio_dev_data)
-{
-	struct admt4000_iio_dev *iio_dev = iio_dev_data->dev;
-	struct admt4000_dev *dev = iio_dev->admt4000_desc;
-	struct iio_buffer *buffer = iio_dev_data->buffer;
-	int i, ret;
-	bool is_one_shot, cnv;
-	uint8_t turns;
-	uint16_t angle[2];
-	int16_t buff[4];
-
-	ret = admt4000_get_cnv_mode(dev, &is_one_shot);
-	if (ret)
-		return ret;
-
-	/* Set CNV High at every start of the routine*/
-	ret = admt4000_set_cnv(dev, true);
-	if (ret)
-		return ret;
-
-	for (i = 0; i < iio_dev_data->buffer->samples;) {
-		ret = admt4000_set_cnv(dev, true);
-		if (ret)
-			return ret;
-		
-		ret = admt4000_set_cnv(dev, false);
-		if (ret)
-			return ret;
-
-		no_os_udelay(1200); // previous working delay 250uS
-
-		/* Set CNV High at every start of the routine*/
-		ret = admt4000_set_cnv(dev, true);
-		if (ret)
-			return ret;
-
-		ret = admt4000_get_raw_turns_and_angle(dev, &turns, angle);
-		if (ret)
-			break;
-
-		if (buffer->active_mask & 0x01) {
-			buff[i] = (int16_t) angle[0];
-			i++;
-		}
-		if (buffer->active_mask & 0x02) {
-			buff[i] = (int16_t) angle[1];
-			i++;
-		}
-		if (buffer->active_mask & 0x04) {
-			buff[i] = (int16_t) turns;
-			i++;
-		}
-		if (buffer->active_mask & 0x08) {
-			ret = admt4000_get_temp(dev, &buff[i], true);
-			i++;
-		}
-
-		ret = iio_buffer_push_scan(iio_dev_data->buffer, buff);
-		if (ret)
-			break;
-	}
-
-	return 0;
-}
-
 
 /**
 * @brief Updates the number of active channels and the total number of
