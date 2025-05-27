@@ -1040,7 +1040,7 @@ static int admt4000_iio_read_scale(void *dev, char *buf, uint32_t len,
 		vals[0] = 100;
 		vals[1] = 1632;
 
-		return iio_format_value(buf, len, IIO_VAL_FRACTIONAL, 2, vals);
+		return iio_format_value(buf, len, IIO_VAL_FRACTIONAL_LOG2, 2, vals);
 	case IIO_MAGN:
 		vals[0] = 1;
 
@@ -1085,11 +1085,14 @@ static int admt4000_iio_read_offset(void *dev, char *buf, uint32_t len,
 	case IIO_MAGN:
 	case IIO_COUNT:
 		vals[0] = 0;
-
 		return iio_format_value(buf, len, IIO_VAL_INT, 1, vals);
+
 	case IIO_TEMP:
 		vals[0] = 1150;
-
+		return iio_format_value(buf, len, IIO_VAL_INT, 1, vals);
+	
+	default:
+		return -EINVAL;
 	}
 }
 
