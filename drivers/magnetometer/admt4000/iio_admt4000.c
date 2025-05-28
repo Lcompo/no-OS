@@ -44,9 +44,6 @@
 static int admt4000_iio_read_samples(void *dev, int16_t *buff,
 				     uint32_t samples);
 
-static int32_t admt4000_iio_submit_samples(struct iio_device_data
-		*iio_dev_data);
-
 static int admt4000_iio_read_scale(void *dev, char *buf, uint32_t len,
 				   const struct iio_ch_info *channel, intptr_t priv);
 
@@ -1040,11 +1037,11 @@ static int admt4000_iio_read_scale(void *dev, char *buf, uint32_t len,
 		vals[0] = 100;
 		vals[1] = 1632;
 
-		return iio_format_value(buf, len, IIO_VAL_FRACTIONAL_LOG2, 2, vals);
+		return iio_format_value(buf, len, IIO_VAL_FRACTIONAL, 2, vals);
 	case IIO_MAGN:
 		vals[0] = 1;
 
-		return iio_format_value(buf, len, IIO_VAL_FRACTIONAL, 2, vals);
+		return iio_format_value(buf, len, IIO_VAL_FRACTIONAL_LOG2, 2, vals);
 	default:
 		return -EINVAL;
 	}
