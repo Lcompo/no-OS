@@ -759,6 +759,48 @@ int admt4000_get_cnv(struct admt4000_dev *device, bool *is_rising)
 }
 
 /***************************************************************************//**
+ * @brief Toggle the CNV bits to start/stop conversion.
+ *
+ * @param device - The device structure.
+ *
+ * @return 0 in case of success, negative error code otherwise.
+*******************************************************************************/
+int admt4000_toggle_cnv(struct admt4000_dev *device)
+{
+	int ret;
+	uint32_t temp;
+
+	if (false) {
+		ret = no_os_gpio_set_value(device->gpio_cnv, NO_OS_GPIO_HIGH);
+		if (ret)
+			return ret;
+
+		no_os_udelay(1);
+
+		ret = no_os_gpio_set_value(device->gpio_cnv, NO_OS_GPIO_LOW);
+		if (ret)
+			return ret;
+
+	} else {
+		temp = no_os_field_prep(ADMT4000_CNV_EDGE_MASK, ADMT4000_RISING_EDGE);
+		ret = admt4000_reg_update(device, ADMT4000_AGP_REG_CNVPAGE,
+						ADMT4000_CNV_EDGE_MASK, temp);
+		
+		if (ret)
+			return ret;
+
+		temp = no_os_field_prep(ADMT4000_CNV_EDGE_MASK, ADMT4000_FALLING_EDGE);
+		ret =  admt4000_reg_update(device, ADMT4000_AGP_REG_CNVPAGE,
+						ADMT4000_CNV_EDGE_MASK, temp);
+		
+		if (ret)
+			return ret;
+	}
+
+	return 0;
+}
+
+/***************************************************************************//**
  * @brief Reads ANGLE and ABSANGLE register contents in 1 CS frame.
  *
  * @param device - The device structure.
@@ -817,8 +859,7 @@ int admt4000_get_raw_turns_and_angle(struct admt4000_dev *device,
 {
 	int i, ret;
 	uint16_t admt4000_angle_masks[] = {
-		//ADMT4000_ABS_ANGLE_MASK,
-		NO_OS_GENMASK(15, 0),
+		ADMT4000_ABS_ANGLE_MASK,
 		ADMT4000_ANGLE_MASK,
 	};
 
